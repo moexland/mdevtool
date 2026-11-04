@@ -1,0 +1,32 @@
+{
+  "Android.bp": {
+    "sha256": "90f5658e9e231ffbc83a47c3f2317ecb7e8a9a8714736e17ba479cf01293ddc6"
+  },
+  "AndroidProducts.mk": {
+    "sha256": "d7ccca0d16193e320c69ae0bfc1263bddfdfdfb9d9c251b2fe00a826d7368a76"
+  },
+  "BoardConfig.mk": {
+    "sha256": "9420fee42fc839d22743c17b2f4c929cba687ec65959fc774817f0a7581e4a54"
+  },
+  "NX809J.mk": {
+    "sha256": "8cc6ce451d836c40814ceadaca5e25ebe8f9556461c61067b6a1ca2d0b166f58"
+  },
+  "compatibility_matrix.device.xml": {
+    "sha256": "a601665626d078dd79804eb0bd980cf2d75b7bd36271bc9bb05116033b2fc511"
+  },
+  "proprietary/stock/boot.img": {
+    "input": "boot.img"
+  },
+  "proprietary/stock/odm.img": {
+    "input": "odm.img"
+  },
+  "proprietary/stock/system_dlkm.img": {
+    "input": "system_dlkm.img"
+  },
+  "proprietary/stock/vendor.img": {
+    "input": "vendor.img"
+  },
+  "proprietary/stock/vendor_dlkm.img": {
+    "input": "vendor_dlkm.img"
+  }
+}

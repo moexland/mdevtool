@@ -1,0 +1,72 @@
+{
+  "vendor": "nubia",
+  "device": "NX809J",
+  "platform": "canoe",
+  "product": "NX809J",
+  "bootloader_board_name": "NX809J",
+  "prebuilt_images": [
+    "boot",
+    "vendor",
+    "odm",
+    "vendor_dlkm",
+    "system_dlkm"
+  ],
+  "built_partitions": {
+    "system": "erofs",
+    "system_ext": "erofs",
+    "product": "erofs"
+  },
+  "ab_ota_partitions": [
+    "system",
+    "system_ext",
+    "product"
+  ],
+  "super": {
+    "size": 19327352832,
+    "groups": {
+      "qti_dynamic_partitions": {
+        "size": 19323158528,
+        "partitions": [
+          "system",
+          "system_ext",
+          "product",
+          "vendor",
+          "odm",
+          "vendor_dlkm",
+          "system_dlkm"
+        ]
+      }
+    }
+  },
+  "init_boot": {
+    "partition_size": 8388608,
+    "page_size": 4096,
+    "header_version": 4,
+    "lz4_ramdisk": true,
+    "avb": {
+      "salt": "0433c3a60b9a46da313dabf289b029856ac854c456ac0bae72e2a5e598c86e7d",
+      "properties": {
+        "com.android.build.init_boot.os_version": "16",
+        "com.android.build.init_boot.fingerprint": "REDMAGIC/NX809J/NX809J:16/BQ2A.250705.001-BP2A.250605.031.A3/20260317.233524:user/release-keys",
+        "com.android.build.init_boot.security_patch": "2026-02-01"
+      }
+    }
+  },
+  "vintf_manifests": {
+    "vendor": [
+      "etc/vintf/manifest_canoe.xml",
+      "etc/vintf/manifest/*.xml"
+    ],
+    "odm": [
+      "etc/vintf/manifest.xml",
+      "etc/vintf/manifest/*.xml"
+    ]
+  },
+  "sources": {
+    "identity": "Read at generation time from the stock vendor/build.prop: ro.product.vendor.{brand,manufacturer,model} and ro.product.first_api_level.",
+    "built_partitions": "File systems of the stock RedMagicOS 11.0.23MR1 system, system_ext and product images.",
+    "super": "Stock super partition metadata (lpdump on the device).",
+    "init_boot": "Stock init_boot partition (8 MiB in the GPT) and image: header version 4, page size 4096, no kernel, empty command line, zero OS version and patch level, LZ4 legacy ramdisk; AVB hash footer with algorithm NONE, the salt and the properties above.",
+    "vintf_manifests": "Vendor HAL manifests of the stock vendor and odm images."
+  }
+}

@@ -1,0 +1,6 @@
+prebuilt_etc {
+    name: "init.canoe.grimoireos.rc",
+    src: "init.canoe.grimoireos.rc",
+    sub_dir: "init",
+    system_ext_specific: true,
+}

@@ -1,0 +1,6 @@
+prebuilt_etc {
+    name: "init.nx809j.grimoireos.rc",
+    src: "init.nx809j.grimoireos.rc",
+    sub_dir: "init",
+    system_ext_specific: true,
+}

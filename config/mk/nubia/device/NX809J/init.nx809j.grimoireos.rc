@@ -1,0 +1,8 @@
+# The stock vendor policy labels the fan control nodes in vendor_file_contexts
+# (/sys/kernel/fan -> sysfs_nb_fan). Sysfs nodes only get file_contexts labels
+# through restorecon, so apply them once the driver has created the nodes.
+on boot
+    restorecon /sys/kernel/fan
+    restorecon /sys/kernel/fan/fan_enable
+    restorecon /sys/kernel/fan/fan_speed_count
+    restorecon /sys/kernel/fan/fan_speed_level

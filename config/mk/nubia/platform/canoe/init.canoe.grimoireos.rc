@@ -1,0 +1,6 @@
+# Stock QTI services that crash-loop on this system. Stopping them once boot
+# completes is a workaround: it doesn't fix the binaries, and they still crash
+# before this trigger.
+on property:sys.boot_completed=1
+    stop vendor.qsap.qapeservice
+    stop syshealthmon-service
