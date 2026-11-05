@@ -155,7 +155,14 @@
       "values": {
         "config_device_volte_available": true,
         "config_device_vt_available": true,
-        "config_device_wfc_ims_available": true
+        "config_device_wfc_ims_available": true,
+        "config_hotswapCapable": true,
+        "config_voice_data_sms_auto_fallback": true,
+        "config_telephony5gStandalone": true,
+        "config_telephony5gNonStandalone": true,
+        "config_wlan_network_service_package": "vendor.qti.iwlan",
+        "config_wlan_data_service_package": "vendor.qti.iwlan",
+        "config_qualified_networks_service_package": "vendor.qti.iwlan"
       }
     },
     "TelephonyResCommon": {
