@@ -17,3 +17,16 @@ PRODUCT_SYSTEM_MANUFACTURER := nubia
 PRODUCT_SHIPPING_API_LEVEL := 36
 
 PRODUCT_PACKAGES += nx809j_framework_compatibility_matrix
+
+# From the stock recovery ramdisk.
+PRODUCT_PACKAGES += \
+    android.hardware.boot-service.qti.recovery \
+    android.hardware.health-service.qti_recovery \
+    libboot_control_qti \
+    librecovery_updater
+PRODUCT_COPY_FILES += \
+    vendor/nubia/NX809J/proprietary/recovery/init.recovery.qcom.rc:$(TARGET_COPY_OUT_RECOVERY)/root/init.recovery.qcom.rc \
+    vendor/nubia/NX809J/proprietary/recovery/system/etc/init/android.hardware.boot-service.qti.recovery.rc:$(TARGET_COPY_OUT_RECOVERY)/root/system/etc/init/android.hardware.boot-service.qti.recovery.rc \
+    vendor/nubia/NX809J/proprietary/recovery/system/etc/init/android.hardware.health-service.qti_recovery.rc:$(TARGET_COPY_OUT_RECOVERY)/root/system/etc/init/android.hardware.health-service.qti_recovery.rc \
+    vendor/nubia/NX809J/proprietary/recovery/system/etc/vintf/manifest/boot-service.qti.xml:$(TARGET_COPY_OUT_RECOVERY)/root/system/etc/vintf/manifest/boot-service.qti.xml \
+    vendor/nubia/NX809J/proprietary/recovery/system/etc/vintf/manifest/android.hardware.health-service.qti.xml:$(TARGET_COPY_OUT_RECOVERY)/root/system/etc/vintf/manifest/android.hardware.health-service.qti.xml

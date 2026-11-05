@@ -1,14 +1,13 @@
 # Board settings shared by every GrimoireOS nubia device.
 #
 # The kernel, vendor, odm and boot images stay stock; this tree builds system,
-# system_ext, product and init_boot. Stock facts such as partition geometry come
-# from the generated vendor/<vendor>/<device>/BoardConfig.mk, which includes this
-# file first and then overrides it.
+# system_ext, product, init_boot and recovery. Stock facts such as partition
+# geometry come from the generated vendor/<vendor>/<device>/BoardConfig.mk, which
+# includes this file first and then overrides it.
 
 include build/make/target/board/BoardConfigMainlineCommon.mk
 
 TARGET_NO_KERNEL := true
-TARGET_NO_RECOVERY := true
 BOARD_USES_GENERIC_KERNEL_IMAGE := true
 TARGET_USERIMAGES_USE_F2FS := true
 

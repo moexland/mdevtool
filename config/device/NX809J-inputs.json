@@ -25,6 +25,11 @@
       "path": "system_dlkm.img",
       "size": 8433664,
       "sha256": "f0744e87604e545344cfa961d6f9725775a642d4e79131465140f7c02ad1406a"
+    },
+    "recovery": {
+      "path": "recovery.img",
+      "size": 104857600,
+      "sha256": "9b12ae443c0b2ee5a1d3d9ffaaaf8df0f9adc7fa21b9d73734f9be945516ee2b"
     }
   },
   "trees": {

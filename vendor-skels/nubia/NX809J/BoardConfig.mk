@@ -2,6 +2,7 @@
 include vendor/mdevtool/config/mk/nubia/device/NX809J/BoardConfig-base.mk
 
 TARGET_BOOTLOADER_BOARD_NAME := NX809J
+TARGET_SCREEN_DENSITY := 520
 
 BOARD_PREBUILT_BOOTIMAGE := vendor/nubia/NX809J/proprietary/stock/boot.img
 BOARD_PREBUILT_VENDORIMAGE := vendor/nubia/NX809J/proprietary/stock/vendor.img
@@ -30,3 +31,14 @@ BOARD_INIT_BOOT_HEADER_VERSION := 4
 BOARD_RAMDISK_USE_LZ4 := true
 # The stock header carries no OS version or patch level.
 BOARD_MKBOOTIMG_INIT_ARGS += --header_version 4 --os_version 0 --os_patch_level 0
+
+# Like the stock recovery: a ramdisk only, booted with the kernel of boot.
+BOARD_RECOVERYIMAGE_PARTITION_SIZE := 104857600
+BOARD_EXCLUDE_KERNEL_FROM_RECOVERY_IMAGE := true
+BOARD_RECOVERY_MKBOOTIMG_ARGS := --header_version 4
+TARGET_RECOVERY_FSTAB := vendor/nubia/NX809J/proprietary/recovery/system/etc/recovery.fstab
+TARGET_RECOVERY_PIXEL_FORMAT := RGBX_8888
+TARGET_RECOVERY_UI_SCREEN_WIDTH := 1216
+# Keep the menu out of the rounded display corners.
+TARGET_RECOVERY_UI_MARGIN_HEIGHT := 65
+TARGET_RECOVERY_UI_MARGIN_WIDTH := 65

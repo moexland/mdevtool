@@ -1,0 +1,8 @@
+# Power supply nodes that the QTI health HAL reads in recovery. The stock vendor
+# policy labels them with its own types, which don't exist in this tree;
+# sysfs_batteryinfo is the platform type that health HALs may read.
+recovery_only(`
+genfscon sysfs /devices/platform/soc/soc:pmic-glink/soc:pmic-glink:battery-charger/power_supply/battery u:object_r:sysfs_batteryinfo:s0
+genfscon sysfs /devices/platform/soc/soc:pmic-glink/soc:pmic-glink:battery-charger/power_supply/usb u:object_r:sysfs_batteryinfo:s0
+genfscon sysfs /devices/platform/soc/soc:pmic-glink/soc:pmic-glink:battery-charger/power_supply/wireless u:object_r:sysfs_batteryinfo:s0
+')

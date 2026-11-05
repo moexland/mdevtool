@@ -62,11 +62,30 @@
       "etc/vintf/manifest/*.xml"
     ]
   },
+  "recovery": {
+    "screen_width": 1216,
+    "rounded_corner_radius_dp": 20,
+    "fstab": "system/etc/recovery.fstab",
+    "modules": [
+      "system/bin/hw/android.hardware.boot-service.qti.recovery",
+      "system/bin/hw/android.hardware.health-service.qti_recovery",
+      "system/lib64/libboot_control_qti.so",
+      "system/lib64/librecovery_updater.so"
+    ],
+    "files": [
+      "init.recovery.qcom.rc",
+      "system/etc/init/android.hardware.boot-service.qti.recovery.rc",
+      "system/etc/init/android.hardware.health-service.qti_recovery.rc",
+      "system/etc/vintf/manifest/boot-service.qti.xml",
+      "system/etc/vintf/manifest/android.hardware.health-service.qti.xml"
+    ]
+  },
   "sources": {
-    "identity": "Read at generation time from the stock vendor/build.prop: ro.product.vendor.{brand,manufacturer,model} and ro.product.first_api_level.",
+    "identity": "Read at generation time from the stock vendor/build.prop: ro.product.vendor.{brand,manufacturer,model}, ro.product.first_api_level and ro.sf.lcd_density.",
     "built_partitions": "File systems of the stock RedMagicOS 11.0.23MR1 system, system_ext and product images.",
     "super": "Stock super partition metadata (lpdump on the device).",
     "init_boot": "Stock init_boot partition (8 MiB in the GPT) and image: header version 4, page size 4096, no kernel, empty command line, zero OS version and patch level, LZ4 legacy ramdisk; AVB hash footer with algorithm NONE, the salt and the properties above.",
-    "vintf_manifests": "Vendor HAL manifests of the stock vendor and odm images."
+    "vintf_manifests": "Vendor HAL manifests of the stock vendor and odm images.",
+    "recovery": "Stock recovery image, a whole-partition dump: its size is the partition size and its header gives the header version. From its ramdisk come the fstab, the minui pixel format, the QTI boot control and health HALs with their libraries, init scripts and VINTF fragments, and init.recovery.qcom.rc, which links /dev/block/bootdevice for the fstab. screen_width is the panel width: the stock system reports DisplayInfo(1216 x 2688). rounded_corner_radius_dp is dimen/rounded_corner_radius of the stock vendor overlay FrameworksResTarget_Vendor.apk; the menu margins are that radius in pixels."
   }
 }

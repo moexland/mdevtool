@@ -1,0 +1,5 @@
+# In recovery /system/bin is a rootfs directory, which the QTI boot control HAL
+# reads when it starts. fastbootd.te grants fastbootd the same.
+recovery_only(`
+allow hal_bootctl_default rootfs:dir r_dir_perms;
+')

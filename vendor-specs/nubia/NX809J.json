@@ -6,13 +6,46 @@
     "sha256": "d7ccca0d16193e320c69ae0bfc1263bddfdfdfb9d9c251b2fe00a826d7368a76"
   },
   "BoardConfig.mk": {
-    "sha256": "9420fee42fc839d22743c17b2f4c929cba687ec65959fc774817f0a7581e4a54"
+    "sha256": "84499a489777051f959b8f494340946c72d1a76009750a6b1d0446136566c9fe"
   },
   "NX809J.mk": {
-    "sha256": "8cc6ce451d836c40814ceadaca5e25ebe8f9556461c61067b6a1ca2d0b166f58"
+    "sha256": "ea3078e275510ed50049ded2b5b98f05b1c6469313910e76ac145090356de537"
   },
   "compatibility_matrix.device.xml": {
     "sha256": "a601665626d078dd79804eb0bd980cf2d75b7bd36271bc9bb05116033b2fc511"
+  },
+  "proprietary/Android.bp": {
+    "sha256": "7cc37d5c74514673fcdef68d7d6c2a097d60845bcfe471b87a6b6800aad6c15f"
+  },
+  "proprietary/recovery/init.recovery.qcom.rc": {
+    "sha256": "d546b0cac17a7b00e63d4a2e24d6dfe99fe4cf517551e64016ae55c53312ae60"
+  },
+  "proprietary/recovery/system/bin/hw/android.hardware.boot-service.qti.recovery": {
+    "sha256": "49aa77a960bf6b22ab804fa68c54f51f18907effad9d968ca1fcd051ea0fb8b6"
+  },
+  "proprietary/recovery/system/bin/hw/android.hardware.health-service.qti_recovery": {
+    "sha256": "a7ed5236e838a37437aae9c5cb3f4d19e13bfa5227c6f9b1936ffadfa813634b"
+  },
+  "proprietary/recovery/system/etc/init/android.hardware.boot-service.qti.recovery.rc": {
+    "sha256": "3e2b822cf2dcb40ab45cbc42c59a738df9da78cf215ef2abc26ac2f1706e93bd"
+  },
+  "proprietary/recovery/system/etc/init/android.hardware.health-service.qti_recovery.rc": {
+    "sha256": "c13e5e848cc7cc267d02f2c9e1d59aa540dd71bd3b6b303be9e4784ee1edd7f0"
+  },
+  "proprietary/recovery/system/etc/recovery.fstab": {
+    "sha256": "1bfd9d3afd293cf36697f1a61ea8328354cb42dea796806b07ebae8cc8180b5f"
+  },
+  "proprietary/recovery/system/etc/vintf/manifest/android.hardware.health-service.qti.xml": {
+    "sha256": "b9890d7ea0425ed299cce9561d6ff44f1e1d280fd66f476e785ad173f19b1ab3"
+  },
+  "proprietary/recovery/system/etc/vintf/manifest/boot-service.qti.xml": {
+    "sha256": "3089f00e4540c09c8ceacd8fd3e6129adfae2050f6de275be55574275d7fea3b"
+  },
+  "proprietary/recovery/system/lib64/libboot_control_qti.so": {
+    "sha256": "4a9de5d1e4db2eadc78b1e9dd42de74a7c7b400e4420b3570a29ea249cee5d67"
+  },
+  "proprietary/recovery/system/lib64/librecovery_updater.so": {
+    "sha256": "92a622e9a0aab4e573eb43731a69822e025a0669b88e004be11133a7687f2d4e"
   },
   "proprietary/stock/boot.img": {
     "input": "boot.img"

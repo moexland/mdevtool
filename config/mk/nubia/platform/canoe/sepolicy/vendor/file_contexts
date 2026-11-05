@@ -1,0 +1,11 @@
+# Recovery loads the policy built from this tree, not the stock vendor policy, so
+# the device nodes it uses need labels here.
+
+# The DRM/KMS node that minui draws on. The platform policy already lets recovery
+# use graphics_device.
+/dev/dri/card0          u:object_r:graphics_device:s0
+
+# The bootloader control block, used by recovery and the QTI boot control HAL.
+# ueventd labels the backing node from this stable link, as the stock vendor
+# policy does, so no sdX name is needed.
+/dev/block/platform/soc/1d84000\.ufshc/by-name/misc  u:object_r:misc_block_device:s0
