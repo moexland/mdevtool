@@ -34,6 +34,9 @@
   },
   "trees": {
     "vendor": "vendor",
-    "odm": "odm"
+    "odm": "odm",
+    "system": "system",
+    "system_ext": "system_ext",
+    "product": "product"
   }
 }

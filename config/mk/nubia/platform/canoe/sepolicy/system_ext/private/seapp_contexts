@@ -1,0 +1,2 @@
+# The stock QTI ImsService app, labelled as in the stock system_ext_seapp_contexts.
+user=_app seinfo=platform name=org.codeaurora.ims isPrivApp=true domain=vendor_qtelephony type=app_data_file levelFrom=all

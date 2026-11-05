@@ -30,3 +30,80 @@ PRODUCT_COPY_FILES += \
     vendor/nubia/NX809J/proprietary/recovery/system/etc/init/android.hardware.health-service.qti_recovery.rc:$(TARGET_COPY_OUT_RECOVERY)/root/system/etc/init/android.hardware.health-service.qti_recovery.rc \
     vendor/nubia/NX809J/proprietary/recovery/system/etc/vintf/manifest/boot-service.qti.xml:$(TARGET_COPY_OUT_RECOVERY)/root/system/etc/vintf/manifest/boot-service.qti.xml \
     vendor/nubia/NX809J/proprietary/recovery/system/etc/vintf/manifest/android.hardware.health-service.qti.xml:$(TARGET_COPY_OUT_RECOVERY)/root/system/etc/vintf/manifest/android.hardware.health-service.qti.xml
+
+# From the stock system_ext and product.
+PRODUCT_PACKAGES += \
+    ims \
+    ims_symlink_libimscamera_jni \
+    ims_symlink_libimsmedia_jni \
+    qti-telephony-hidl-wrapper \
+    qti-telephony-utils \
+    ims-ext-common \
+    com.qualcomm.qti.imscmservice@2.0 \
+    com.qualcomm.qti.imscmservice@2.1 \
+    com.qualcomm.qti.imscmservice@2.2 \
+    lib-imsvideocodec \
+    lib-imsvt \
+    lib-imsvtextutils \
+    lib-imsvtutils \
+    libdiag_system.qti \
+    libdiag_system \
+    libimscamera_jni \
+    libimsmedia_jni \
+    vendor.qti.ImsRtpService-V2-ndk \
+    vendor.qti.diaghal@1.0 \
+    vendor.qti.hardware.radio.ims@1.0 \
+    vendor.qti.hardware.radio.ims@1.1 \
+    vendor.qti.hardware.radio.ims@1.2 \
+    vendor.qti.hardware.radio.ims@1.3 \
+    vendor.qti.hardware.radio.ims@1.4 \
+    vendor.qti.hardware.radio.ims@1.5 \
+    vendor.qti.hardware.radio.ims@1.6 \
+    vendor.qti.hardware.radio.ims@1.7 \
+    vendor.qti.hardware.radio.ims@1.8 \
+    vendor.qti.hardware.radio.ims@1.9 \
+    vendor.qti.ims.callcapability@1.0 \
+    vendor.qti.ims.callcapabilityaidlservice-V1-ndk \
+    vendor.qti.ims.callinfo@1.0 \
+    vendor.qti.ims.configaidlservice-V1-ndk \
+    vendor.qti.ims.configservice@1.0 \
+    vendor.qti.ims.configservice@1.1 \
+    vendor.qti.ims.connection@1.0 \
+    vendor.qti.ims.connectionaidlservice-V1-ndk \
+    vendor.qti.ims.datachannelservice-V1-ndk \
+    vendor.qti.ims.datachannelservice-V2-ndk \
+    vendor.qti.ims.datachannelservice-V3-ndk \
+    vendor.qti.ims.factory@1.0 \
+    vendor.qti.ims.factory@1.1 \
+    vendor.qti.ims.factory@2.0 \
+    vendor.qti.ims.factory@2.1 \
+    vendor.qti.ims.factory@2.2 \
+    vendor.qti.ims.factoryaidlservice-V1-ndk \
+    vendor.qti.ims.imscmaidlservice-V1-ndk \
+    vendor.qti.ims.rcsconfig@1.0 \
+    vendor.qti.ims.rcsconfig@1.1 \
+    vendor.qti.ims.rcsconfig@2.0 \
+    vendor.qti.ims.rcsconfig@2.1 \
+    vendor.qti.ims.rcssip@1.0 \
+    vendor.qti.ims.rcssip@1.1 \
+    vendor.qti.ims.rcssip@1.2 \
+    vendor.qti.ims.rcssipaidlservice-V1-ndk \
+    vendor.qti.ims.rcsuce@1.0 \
+    vendor.qti.ims.rcsuce@1.1 \
+    vendor.qti.ims.rcsuce@1.2 \
+    vendor.qti.ims.rcsuceaidlservice-V1-ndk \
+    vendor.qti.ims.uceaidlservice-V1-ndk \
+    vendor.qti.imsrtpservice@3.0 \
+    vendor.qti.imsrtpservice@3.1 \
+    vendor.qti.diaghal-V1-ndk
+PRODUCT_COPY_FILES += \
+    vendor/nubia/NX809J/permissions/privapp-permissions-org.codeaurora.ims.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/permissions/privapp-permissions-org.codeaurora.ims.xml \
+    vendor/nubia/NX809J/proprietary/system_ext/etc/permissions/qti_telephony_hidl_wrapper.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/permissions/qti_telephony_hidl_wrapper.xml \
+    vendor/nubia/NX809J/proprietary/system_ext/etc/permissions/qti_telephony_utils.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/permissions/qti_telephony_utils.xml \
+    vendor/nubia/NX809J/proprietary/product/etc/permissions/ims_ext_common.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/permissions/ims_ext_common.xml
+
+# Stock resource values.
+PRODUCT_PACKAGES += \
+    FrameworkResCommon \
+    TelephonyResCommon \
+    CarrierConfigResCommon

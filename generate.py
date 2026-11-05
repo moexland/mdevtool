@@ -8,8 +8,9 @@ run deletes it and writes it again from:
 * config/device/<device>-inputs.json: the stock inputs and their hashes;
 * config/mk/<vendor>/: hand-written recipes, included by the generated makefiles.
 
-Stock files are copied from the ramdisk of the stock recovery image, which the
-generator unpacks itself, so the inputs are only images and unpacked partition trees.
+Stock files come from the unpacked stock partition trees and from the ramdisk of the
+stock recovery image, which the generator unpacks itself. Stock overlays are rebuilt
+from their compiled XML, which the generator decodes itself as well.
 
 The result is compared with vendor-specs/<vendor>/<device>.json. When the output
 changes on purpose, rerun with --update-spec and commit the new spec together with
@@ -21,6 +22,7 @@ from __future__ import annotations
 import argparse
 import difflib
 import hashlib
+import io
 import json
 import posixpath
 import shutil
@@ -29,8 +31,9 @@ import struct
 import subprocess
 import sys
 import xml.etree.ElementTree as ET
+import zipfile
 from collections import defaultdict
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 MDEVTOOL = Path(__file__).resolve().parent
@@ -51,6 +54,11 @@ LZ4_LEGACY_MAGIC = b"\x02\x21\x4c\x18"
 EM_AARCH64 = 183
 # Linked by every module without being declared.
 IMPLICIT_LIBS = {"libc.so", "libm.so", "libdl.so", "libc++.so"}
+# Partitions that stock files may be installed to: Soong flag and make output path.
+PARTITIONS = {
+    "system_ext": ("system_ext_specific: true,", "$(TARGET_COPY_OUT_SYSTEM_EXT)"),
+    "product": ("product_specific: true,", "$(TARGET_COPY_OUT_PRODUCT)"),
+}
 
 
 class GenerateError(Exception):
@@ -65,6 +73,17 @@ class Recovery:
     header_version: int
     files: dict[str, bytes]
     props: dict[str, str]
+
+
+@dataclass
+class Section:
+    """What a group of stock files adds to the generated tree."""
+
+    texts: dict[str, str] = field(default_factory=dict)
+    files: dict[str, bytes] = field(default_factory=dict)
+    modules: list[str] = field(default_factory=list)
+    blueprints: list[str] = field(default_factory=list)
+    copies: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -264,6 +283,114 @@ def elf_needed(data: bytes, path: str) -> list[str]:
     return needed
 
 
+def axml_strings(data: bytes, offset: int) -> list[str]:
+    """Read a ResStringPool chunk."""
+    header_size = struct.unpack_from("<H", data, offset + 2)[0]
+    count, _, flags, start, _ = struct.unpack_from("<5I", data, offset + 8)
+    positions = struct.unpack_from(f"<{count}I", data, offset + header_size)
+    strings = []
+    for position in positions:
+        i = offset + start + position
+        if flags & 0x100:  # UTF-8: UTF-16 length, then UTF-8 length
+            i += 2 if data[i] & 0x80 else 1
+            length = data[i]
+            if length & 0x80:
+                length = (length & 0x7F) << 8 | data[i + 1]
+                i += 1
+            strings.append(data[i + 1 : i + 1 + length].decode())
+        else:
+            (length,) = struct.unpack_from("<H", data, i)
+            if length & 0x8000:
+                length = (length & 0x7FFF) << 16 | struct.unpack_from(
+                    "<H", data, i + 2
+                )[0]
+                i += 2
+            strings.append(data[i + 2 : i + 2 + 2 * length].decode("utf-16-le"))
+    return strings
+
+
+def axml_value(strings: list[str], raw: int, kind: int, data: int) -> str:
+    if raw != 0xFFFFFFFF:
+        return strings[raw]
+    if kind == 0x03:  # string
+        return strings[data]
+    if kind == 0x10:  # decimal
+        return str(struct.unpack("<i", struct.pack("<I", data))[0])
+    if kind == 0x11:  # hexadecimal
+        return f"0x{data:08x}"
+    if kind == 0x12:  # boolean
+        return "true" if data else "false"
+    if kind == 0x04:  # float
+        return repr(struct.unpack("<f", struct.pack("<I", data))[0])
+    return f"@0x{data:08x}"  # reference and other types, unused by the decoded files
+
+
+@dataclass
+class XmlNode:
+    tag: str
+    attrs: list[tuple[str, str]]
+    children: list[XmlNode] = field(default_factory=list)
+    text: str | None = None
+
+    def lines(self, depth: int = 0) -> list[str]:
+        pad = "    " * depth
+        attrs = "".join(f' {name}="{xml_escape(value)}"' for name, value in self.attrs)
+        if self.text is not None:
+            return [f"{pad}<{self.tag}{attrs}>{xml_escape(self.text)}</{self.tag}>"]
+        if not self.children:
+            return [f"{pad}<{self.tag}{attrs}/>"]
+        inner = [line for child in self.children for line in child.lines(depth + 1)]
+        return [f"{pad}<{self.tag}{attrs}>", *inner, f"{pad}</{self.tag}>"]
+
+
+def xml_escape(text: str) -> str:
+    for char, entity in (("&", "&amp;"), ("<", "&lt;"), (">", "&gt;"), ('"', "&quot;")):
+        text = text.replace(char, entity)
+    return text
+
+
+def axml(data: bytes, name: str) -> XmlNode:
+    """Decode a compiled (binary) Android XML file, keeping raw attribute values."""
+    if struct.unpack_from("<H", data)[0] != 0x0003:
+        raise GenerateError(f"{name} is not a compiled XML file")
+    strings: list[str] = []
+    stack = [XmlNode("", [])]
+    offset = 8
+    while offset < len(data):
+        kind, _, size = struct.unpack_from("<HHI", data, offset)
+        if kind == 0x0001:  # string pool
+            strings = axml_strings(data, offset)
+        elif kind == 0x0102:  # start element
+            _, tag, start, stride, count = struct.unpack_from(
+                "<IIHHH", data, offset + 16
+            )
+            attrs = []
+            for i in range(count):
+                _, attr, raw, _, _, value_kind, value = struct.unpack_from(
+                    "<IIIHBBI", data, offset + 16 + start + i * stride
+                )
+                attrs.append(
+                    (strings[attr], axml_value(strings, raw, value_kind, value))
+                )
+            node = XmlNode(strings[tag], attrs)
+            stack[-1].children.append(node)
+            stack.append(node)
+        elif kind == 0x0103:  # end element
+            stack.pop()
+        elif kind == 0x0104:  # character data
+            stack[-1].text = strings[struct.unpack_from("<I", data, offset + 16)[0]]
+        offset += size
+    if len(stack) != 1 or len(stack[0].children) != 1:
+        raise GenerateError(f"{name} is not a well-formed compiled XML file")
+    return stack[0].children[0]
+
+
+def apk_package(data: bytes, name: str) -> str:
+    with zipfile.ZipFile(io.BytesIO(data)) as apk:
+        manifest = axml(apk.read("AndroidManifest.xml"), name)
+    return dict(manifest.attrs)["package"]
+
+
 def check_recipes(device: Device) -> None:
     """Keep the dependency one-way: recipes never reference the generated tree."""
     for path in sorted((TREE / device.mk_path).rglob("*")):
@@ -338,7 +465,9 @@ def board_makefile(device: Device, props: dict[str, str], recovery: Recovery) ->
     return "\n".join(lines) + "\n"
 
 
-def product_makefile(device: Device, props: dict[str, str], modules: list[str]) -> str:
+def product_makefile(
+    device: Device, props: dict[str, str], sections: dict[str, Section]
+) -> str:
     config = device.config
 
     def prop(key: str) -> str:
@@ -365,17 +494,13 @@ def product_makefile(device: Device, props: dict[str, str], modules: list[str]) 
         f"PRODUCT_SHIPPING_API_LEVEL := {prop('ro.product.first_api_level')}",
         "",
         f"PRODUCT_PACKAGES += {matrix_module(device)}",
-        "",
-        "# From the stock recovery ramdisk.",
-        *make_list("PRODUCT_PACKAGES", modules),
-        *make_list(
-            "PRODUCT_COPY_FILES",
-            [
-                f"{device.out_path}/{RECOVERY_DIR}/{path}:$(TARGET_COPY_OUT_RECOVERY)/root/{path}"
-                for path in config["recovery"]["files"]
-            ],
-        ),
     ]
+    for comment, section in sections.items():
+        lines += ["", f"# {comment}"]
+        if section.modules:
+            lines += make_list("PRODUCT_PACKAGES", section.modules)
+        if section.copies:
+            lines += make_list("PRODUCT_COPY_FILES", section.copies)
     return "\n".join(lines) + "\n"
 
 
@@ -409,51 +534,310 @@ vintf_compatibility_matrix {{
 """
 
 
-def recovery_module(device: Device, path: str, data: bytes) -> tuple[str, str]:
-    """Describe a stock ELF file of the recovery ramdisk as a prebuilt module.
+def blueprint(kind: str, props: list[str]) -> str:
+    body = "\n".join(f"    {line}" for line in props)
+    return f"{kind} {{\n{body}\n}}\n"
 
-    ELF files can't go through PRODUCT_COPY_FILES. Declaring the libraries that a
-    file links makes the build install them in the recovery ramdisk as well.
+
+def elf_props(path: str, data: bytes) -> list[str]:
+    """Declare the libraries a stock ELF file links, so that the build installs them.
+
+    A missing library then fails the build instead of the device at run time.
     """
     libs = [lib for lib in elf_needed(data, path) if lib not in IMPLICIT_LIBS]
     shared_libs = ", ".join(f'"{lib.removesuffix(".so")}"' for lib in libs)
-    directory, base = posixpath.split(path)
-    src = f'"{posixpath.relpath(RECOVERY_DIR, PROPRIETARY)}/{path}"'
-    if directory == "system/bin" or directory.startswith("system/bin/"):
-        name = base
-        kind = "cc_prebuilt_binary"
-        props = [f"srcs: [{src}],"]
-        if directory != "system/bin":
-            props.append(
-                f'relative_install_path: "{posixpath.relpath(directory, "system/bin")}",'
-            )
-    elif directory == "system/lib64" and base.endswith(".so"):
-        name = base.removesuffix(".so")
-        kind = "cc_prebuilt_library_shared"
-        props = [
-            'compile_multilib: "64",',
-            f"target: {{ android_arm64: {{ srcs: [{src}] }} }},",
-        ]
-    else:
-        raise GenerateError(f"No prebuilt module type for {path}")
-    body = "\n".join(
-        f"    {line}"
-        for line in [
-            f'name: "{name}",',
+    return [
+        f"shared_libs: [{shared_libs}],",
+        "strip: { none: true },",
+        "// 4 KiB aligned, and built against the stock versions of these libraries.",
+        "check_elf_files: false,",
+    ]
+
+
+def library_props(name: str, src: str) -> list[str]:
+    return [
+        f'name: "{name}",',
+        'compile_multilib: "64",',
+        f'target: {{ android_arm64: {{ srcs: ["{src}"] }} }},',
+    ]
+
+
+def recovery_section(device: Device, recovery: Recovery) -> Section:
+    """Take the device HALs, their scripts and the fstab from the stock recovery."""
+    config = device.config["recovery"]
+    wanted = [config["fstab"], *config["modules"], *config["files"]]
+    missing = [path for path in wanted if path not in recovery.files]
+    if missing:
+        raise GenerateError(f"Stock recovery ramdisk lacks {', '.join(missing)}")
+    section = Section()
+    for path in wanted:
+        section.files[f"{RECOVERY_DIR}/{path}"] = recovery.files[path]
+    for path in config["files"]:
+        if recovery.files[path][:4] == b"\x7fELF":
+            raise GenerateError(f"{path} is an ELF file; list it under modules")
+        section.copies.append(
+            f"{device.out_path}/{RECOVERY_DIR}/{path}:$(TARGET_COPY_OUT_RECOVERY)/root/{path}"
+        )
+    src_dir = posixpath.relpath(RECOVERY_DIR, PROPRIETARY)
+    for path in config["modules"]:
+        directory, base = posixpath.split(path)
+        src = f"{src_dir}/{path}"
+        if directory == "system/bin" or directory.startswith("system/bin/"):
+            name = base
+            kind = "cc_prebuilt_binary"
+            props = [f'name: "{name}",', f'srcs: ["{src}"],']
+            if directory != "system/bin":
+                hw = posixpath.relpath(directory, "system/bin")
+                props.append(f'relative_install_path: "{hw}",')
+        elif directory == "system/lib64" and base.endswith(".so"):
+            name = base.removesuffix(".so")
+            kind = "cc_prebuilt_library_shared"
+            props = library_props(name, src)
+        else:
+            raise GenerateError(f"No prebuilt module type for {path}")
+        props += [
             f'owner: "{device.vendor}",',
-            *props,
-            f"shared_libs: [{shared_libs}],",
             "recovery: true,",
-            "strip: { none: true },",
-            "// 4 KiB aligned, and built against the stock versions of these libraries.",
-            "check_elf_files: false,",
+            *elf_props(path, recovery.files[path]),
         ]
+        section.modules.append(name)
+        section.blueprints.append(blueprint(kind, props))
+    return section
+
+
+def stock_file(device: Device, root: Path, path: str) -> Path:
+    """Resolve <tree>/<path> to a regular file in an unpacked stock partition."""
+    tree, rest = path.split("/", 1)
+    if tree not in device.inputs["trees"]:
+        raise GenerateError(f"No input tree {tree} for {path}")
+    file = root / device.inputs["trees"][tree] / rest
+    if file.is_symlink() or not file.is_file():
+        raise GenerateError(f"Missing stock file {file}")
+    return file
+
+
+def privapp_allowlist(
+    device: Device, root: Path, src: str, package: str
+) -> tuple[str, str]:
+    """Keep only the package's block of the stock privileged permission allowlists.
+
+    The framework reads an app's allowlist from the partition the app is on.
+    """
+    tree = src.split("/", 1)[0]
+    directory = root / device.inputs["trees"][tree] / "etc/permissions"
+    blocks = [
+        (xml.name, node)
+        for xml in sorted(directory.glob("*.xml"))
+        for node in ET.parse(xml).getroot().iter("privapp-permissions")
+        if node.get("package") == package
+    ]
+    if len(blocks) != 1:
+        raise GenerateError(f"Expected one allowlist for {package} in {directory}")
+    source, node = blocks[0]
+    allowlist = ET.Element("permissions")
+    allowlist.append(node)
+    ET.indent(allowlist, space="    ")
+    name = f"privapp-permissions-{package}.xml"
+    return name, (
+        f'<?xml version="1.0" encoding="utf-8"?>\n'
+        f"<!-- {HEADER} From the stock {tree}/etc/permissions/{source}. -->\n"
+        f"{ET.tostring(allowlist, encoding='unicode')}\n"
     )
-    return name, f"{kind} {{\n{body}\n}}\n"
 
 
-def recovery_blueprint(blocks: list[str]) -> str:
-    return f"// {HEADER}\n\n" + "\n".join(blocks)
+def proprietary_section(device: Device, root: Path) -> Section:
+    """Install the configured stock files of the built partitions.
+
+    Each entry is a path in an unpacked stock tree, installed at the same path, or a
+    {"from", "to"} pair. The install path picks the module type.
+    """
+    section = Section()
+    entries = [
+        (entry, entry) if isinstance(entry, str) else (entry["from"], entry["to"])
+        for entry in device.config["proprietary"]
+    ]
+    installed = {f"/{dst}" for _, dst in entries}
+    for src, dst in entries:
+        file = stock_file(device, root, src)
+        data = file.read_bytes()
+        partition, rel = dst.split("/", 1)
+        if partition not in PARTITIONS:
+            raise GenerateError(f"Can't install stock files to {partition}: {dst}")
+        flag, copy_out = PARTITIONS[partition]
+        section.files[f"{PROPRIETARY}/{dst}"] = data
+        directory, base = posixpath.split(rel)
+        owner = f'owner: "{device.vendor}",'
+        if directory.split("/")[0] in ("app", "priv-app") and base.endswith(".apk"):
+            name = base.removesuffix(".apk")
+            if posixpath.basename(directory) != name:
+                raise GenerateError(f"Expected {directory}/{name}.apk: {dst}")
+            privileged = directory.startswith("priv-app/")
+            props = [
+                f'name: "{name}",',
+                owner,
+                f'apk: "{dst}",',
+                'certificate: "platform",',
+            ]
+            if privileged:
+                props.append("privileged: true,")
+            props += [
+                "// Compiled for the stock Android version, so not against this boot image.",
+                "dex_preopt: { enabled: false },",
+                flag,
+            ]
+            section.modules.append(name)
+            section.blueprints.append(blueprint("android_app_import", props))
+            # Stock links the app's JNI libraries to the shared copies.
+            for link in sorted(p for p in file.parent.rglob("*") if p.is_symlink()):
+                target = link.readlink().as_posix()
+                if target not in installed:
+                    raise GenerateError(
+                        f"{link} points to {target}, which isn't installed"
+                    )
+                location = f"{directory}/{link.relative_to(file.parent).as_posix()}"
+                module = f"{name}_symlink_{link.name.removesuffix('.so')}"
+                section.modules.append(module)
+                section.blueprints.append(
+                    blueprint(
+                        "install_symlink",
+                        [
+                            f'name: "{module}",',
+                            f'installed_location: "{location}",',
+                            f'symlink_target: "{target}",',
+                            flag,
+                        ],
+                    )
+                )
+            if privileged:
+                package = apk_package(data, dst)
+                allowlist, text = privapp_allowlist(device, root, src, package)
+                section.texts[f"permissions/{allowlist}"] = text
+                section.copies.append(
+                    f"{device.out_path}/permissions/{allowlist}:{copy_out}/etc/permissions/{allowlist}"
+                )
+        elif directory == "framework" and base.endswith(".jar"):
+            name = base.removesuffix(".jar")
+            props = [f'name: "{name}",', owner, f'jars: ["{dst}"],', flag]
+            section.modules.append(name)
+            section.blueprints.append(blueprint("dex_import", props))
+        elif directory == "lib64" and base.endswith(".so"):
+            name = base.removesuffix(".so")
+            props = [*library_props(name, dst), owner, flag, *elf_props(dst, data)]
+            section.modules.append(name)
+            section.blueprints.append(blueprint("cc_prebuilt_library_shared", props))
+        elif directory == "etc" or directory.startswith("etc/"):
+            section.copies.append(
+                f"{device.out_path}/{PROPRIETARY}/{dst}:{copy_out}/{rel}"
+            )
+        else:
+            raise GenerateError(f"No way to install {dst}")
+    return section
+
+
+def keep_country(carriers: XmlNode, mcc: str, name: str) -> None:
+    """Keep the carrier_config blocks of one mobile country code.
+
+    CarrierConfig applies vendor.xml after its own per-carrier configs, and a block
+    without filters matches every SIM. Limiting that block to the country keeps the
+    platform's configs for other SIMs and changes nothing for the country's own.
+    """
+    if carriers.tag != "carrier_config_list":
+        raise GenerateError(f"{name} is not a carrier config list")
+    kept = []
+    for block in carriers.children:
+        filters = dict(block.attrs)
+        if not filters:
+            block.attrs = [("mcc", mcc)]
+        elif "mcc" not in filters:
+            raise GenerateError(
+                f"Review the carrier_config filters {filters} in {name}"
+            )
+        elif filters["mcc"] != mcc:
+            continue
+        kept.append(block)
+    carriers.children = kept
+
+
+def overlay_section(device: Device, root: Path) -> Section:
+    """Rebuild stock resource values as static runtime resource overlays.
+
+    Values come either from the configuration, with their stock source noted there, or
+    from the compiled XML resources of a stock overlay.
+    """
+    section = Section()
+    for module, spec in device.config["overlays"].items():
+        target = spec["target"]
+        base = f"overlays/{module}"
+        props = [
+            f'name: "{module}",',
+            'certificate: "platform",',
+            'sdk_version: "current",',
+            "product_specific: true,",
+        ]
+        if "values" in spec:
+            values = []
+            for name, value in spec["values"].items():
+                if isinstance(value, bool):
+                    values.append(
+                        f'    <bool name="{name}">{str(value).lower()}</bool>'
+                    )
+                elif isinstance(value, str):
+                    values.append(
+                        f'    <string name="{name}" translatable="false">{xml_escape(value)}</string>'
+                    )
+                else:
+                    raise GenerateError(f"Unsupported overlay value {module}/{name}")
+            section.texts[f"{base}/res/values/config.xml"] = "\n".join(
+                [
+                    '<?xml version="1.0" encoding="utf-8"?>',
+                    f"<!-- {HEADER} -->",
+                    "<resources>",
+                    *values,
+                    "</resources>",
+                    "",
+                ]
+            )
+        if "xml" in spec:
+            src = spec["xml"]
+            with zipfile.ZipFile(stock_file(device, root, src)) as apk:
+                names = sorted(n for n in apk.namelist() if n.startswith("res/xml/"))
+                if not names:
+                    raise GenerateError(f"{src} has no XML resources")
+                for name in names:
+                    node = axml(apk.read(name), f"{src}:{name}")
+                    origin = f"From the stock {src}:{name}"
+                    if "mcc" in spec:
+                        keep_country(node, spec["mcc"], f"{src}:{name}")
+                        origin += f", keeping mcc {spec['mcc']} only"
+                    section.texts[f"{base}/{name}"] = "\n".join(
+                        [
+                            "<?xml version='1.0' encoding='utf-8' standalone='yes' ?>",
+                            f"<!-- {HEADER} {origin}. -->",
+                            *node.lines(),
+                            "",
+                        ]
+                    )
+            props += [
+                '// Carrier matching compares raw strings: an mnc of "03" must stay "03".',
+                'aaptflags: ["--keep-raw-values"],',
+            ]
+        section.texts[f"{base}/AndroidManifest.xml"] = "\n".join(
+            [
+                '<?xml version="1.0" encoding="utf-8"?>',
+                f"<!-- {HEADER} -->",
+                '<manifest xmlns:android="http://schemas.android.com/apk/res/android"',
+                f'    package="{target}.overlay.common">',
+                '    <application android:hasCode="false" />',
+                f'    <overlay android:targetPackage="{target}" android:isStatic="true" />',
+                "</manifest>",
+                "",
+            ]
+        )
+        section.texts[f"{base}/Android.bp"] = f"// {HEADER}\n\n" + blueprint(
+            "runtime_resource_overlay", props
+        )
+        section.modules.append(module)
+    return section
 
 
 def compatibility_matrix(device: Device, root: Path) -> str:
@@ -604,18 +988,6 @@ def compare_spec(device: Device, entries: dict[str, dict[str, str]]) -> None:
     )
 
 
-def recovery_files(device: Device, recovery: Recovery) -> dict[str, bytes]:
-    config = device.config["recovery"]
-    wanted = [config["fstab"], *config["modules"], *config["files"]]
-    missing = [path for path in wanted if path not in recovery.files]
-    if missing:
-        raise GenerateError(f"Stock recovery ramdisk lacks {', '.join(missing)}")
-    for path in config["files"]:
-        if recovery.files[path][:4] == b"\x7fELF":
-            raise GenerateError(f"{path} is an ELF file; list it under modules")
-    return {f"{RECOVERY_DIR}/{path}": recovery.files[path] for path in wanted}
-
-
 def generate(device: Device, root: Path, update_spec: bool) -> None:
     check_recipes(device)
     images = {
@@ -626,33 +998,35 @@ def generate(device: Device, root: Path, update_spec: bool) -> None:
     props = parse_props(
         (root / device.inputs["trees"]["vendor"] / "build.prop").read_text()
     )
-    stock_files = recovery_files(device, recovery)
-    modules = [
-        recovery_module(device, path, recovery.files[path])
-        for path in device.config["recovery"]["modules"]
-    ]
+    sections = {
+        "From the stock recovery ramdisk.": recovery_section(device, recovery),
+        "From the stock system_ext and product.": proprietary_section(device, root),
+        "Stock resource values.": overlay_section(device, root),
+    }
     texts = {
         "AndroidProducts.mk": products_list(device),
-        f"{device.config['product']}.mk": product_makefile(
-            device, props, [name for name, _ in modules]
-        ),
+        f"{device.config['product']}.mk": product_makefile(device, props, sections),
         "BoardConfig.mk": board_makefile(device, props, recovery),
         "Android.bp": matrix_blueprint(device),
         "compatibility_matrix.device.xml": compatibility_matrix(device, root),
-        f"{PROPRIETARY}/Android.bp": recovery_blueprint(
-            [block for _, block in modules]
-        ),
+        f"{PROPRIETARY}/Android.bp": f"// {HEADER}\n\n"
+        + "\n".join(block for s in sections.values() for block in s.blueprints),
     }
+    files: dict[str, bytes] = {}
+    for section in sections.values():
+        texts.update(section.texts)
+        files.update(section.files)
     out = TREE / device.out_path
     reset_output(out)
     (out / MARKER).write_text(f"{HEADER}\n")
     (out / VERSION_CHECK).write_text(version_check(device))
-    for relative, text in texts.items():
-        (out / relative).parent.mkdir(parents=True, exist_ok=True)
-        (out / relative).write_text(text)
-    for relative, data in stock_files.items():
-        (out / relative).parent.mkdir(parents=True, exist_ok=True)
-        (out / relative).write_bytes(data)
+    for relative, content in [*texts.items(), *files.items()]:
+        target = out / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        if isinstance(content, str):
+            target.write_text(content)
+        else:
+            target.write_bytes(content)
     stock = out / STOCK_DIR
     stock.mkdir(parents=True)
     for name, path in images.items():

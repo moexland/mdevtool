@@ -80,12 +80,104 @@
       "system/etc/vintf/manifest/android.hardware.health-service.qti.xml"
     ]
   },
+  "proprietary": [
+    "system_ext/priv-app/ims/ims.apk",
+    "system_ext/framework/qti-telephony-hidl-wrapper.jar",
+    "system_ext/framework/qti-telephony-utils.jar",
+    "product/framework/ims-ext-common.jar",
+    "system_ext/etc/permissions/qti_telephony_hidl_wrapper.xml",
+    "system_ext/etc/permissions/qti_telephony_utils.xml",
+    "product/etc/permissions/ims_ext_common.xml",
+    "system_ext/lib64/com.qualcomm.qti.imscmservice@2.0.so",
+    "system_ext/lib64/com.qualcomm.qti.imscmservice@2.1.so",
+    "system_ext/lib64/com.qualcomm.qti.imscmservice@2.2.so",
+    "system_ext/lib64/lib-imsvideocodec.so",
+    "system_ext/lib64/lib-imsvt.so",
+    "system_ext/lib64/lib-imsvtextutils.so",
+    "system_ext/lib64/lib-imsvtutils.so",
+    "system_ext/lib64/libdiag_system.qti.so",
+    "system_ext/lib64/libdiag_system.so",
+    "system_ext/lib64/libimscamera_jni.so",
+    "system_ext/lib64/libimsmedia_jni.so",
+    "system_ext/lib64/vendor.qti.ImsRtpService-V2-ndk.so",
+    "system_ext/lib64/vendor.qti.diaghal@1.0.so",
+    "system_ext/lib64/vendor.qti.hardware.radio.ims@1.0.so",
+    "system_ext/lib64/vendor.qti.hardware.radio.ims@1.1.so",
+    "system_ext/lib64/vendor.qti.hardware.radio.ims@1.2.so",
+    "system_ext/lib64/vendor.qti.hardware.radio.ims@1.3.so",
+    "system_ext/lib64/vendor.qti.hardware.radio.ims@1.4.so",
+    "system_ext/lib64/vendor.qti.hardware.radio.ims@1.5.so",
+    "system_ext/lib64/vendor.qti.hardware.radio.ims@1.6.so",
+    "system_ext/lib64/vendor.qti.hardware.radio.ims@1.7.so",
+    "system_ext/lib64/vendor.qti.hardware.radio.ims@1.8.so",
+    "system_ext/lib64/vendor.qti.hardware.radio.ims@1.9.so",
+    "system_ext/lib64/vendor.qti.ims.callcapability@1.0.so",
+    "system_ext/lib64/vendor.qti.ims.callcapabilityaidlservice-V1-ndk.so",
+    "system_ext/lib64/vendor.qti.ims.callinfo@1.0.so",
+    "system_ext/lib64/vendor.qti.ims.configaidlservice-V1-ndk.so",
+    "system_ext/lib64/vendor.qti.ims.configservice@1.0.so",
+    "system_ext/lib64/vendor.qti.ims.configservice@1.1.so",
+    "system_ext/lib64/vendor.qti.ims.connection@1.0.so",
+    "system_ext/lib64/vendor.qti.ims.connectionaidlservice-V1-ndk.so",
+    "system_ext/lib64/vendor.qti.ims.datachannelservice-V1-ndk.so",
+    "system_ext/lib64/vendor.qti.ims.datachannelservice-V2-ndk.so",
+    "system_ext/lib64/vendor.qti.ims.datachannelservice-V3-ndk.so",
+    "system_ext/lib64/vendor.qti.ims.factory@1.0.so",
+    "system_ext/lib64/vendor.qti.ims.factory@1.1.so",
+    "system_ext/lib64/vendor.qti.ims.factory@2.0.so",
+    "system_ext/lib64/vendor.qti.ims.factory@2.1.so",
+    "system_ext/lib64/vendor.qti.ims.factory@2.2.so",
+    "system_ext/lib64/vendor.qti.ims.factoryaidlservice-V1-ndk.so",
+    "system_ext/lib64/vendor.qti.ims.imscmaidlservice-V1-ndk.so",
+    "system_ext/lib64/vendor.qti.ims.rcsconfig@1.0.so",
+    "system_ext/lib64/vendor.qti.ims.rcsconfig@1.1.so",
+    "system_ext/lib64/vendor.qti.ims.rcsconfig@2.0.so",
+    "system_ext/lib64/vendor.qti.ims.rcsconfig@2.1.so",
+    "system_ext/lib64/vendor.qti.ims.rcssip@1.0.so",
+    "system_ext/lib64/vendor.qti.ims.rcssip@1.1.so",
+    "system_ext/lib64/vendor.qti.ims.rcssip@1.2.so",
+    "system_ext/lib64/vendor.qti.ims.rcssipaidlservice-V1-ndk.so",
+    "system_ext/lib64/vendor.qti.ims.rcsuce@1.0.so",
+    "system_ext/lib64/vendor.qti.ims.rcsuce@1.1.so",
+    "system_ext/lib64/vendor.qti.ims.rcsuce@1.2.so",
+    "system_ext/lib64/vendor.qti.ims.rcsuceaidlservice-V1-ndk.so",
+    "system_ext/lib64/vendor.qti.ims.uceaidlservice-V1-ndk.so",
+    "system_ext/lib64/vendor.qti.imsrtpservice@3.0.so",
+    "system_ext/lib64/vendor.qti.imsrtpservice@3.1.so",
+    {
+      "from": "system/system/lib64/vendor.qti.diaghal-V1-ndk.so",
+      "to": "system_ext/lib64/vendor.qti.diaghal-V1-ndk.so"
+    }
+  ],
+  "overlays": {
+    "FrameworkResCommon": {
+      "target": "android",
+      "values": {
+        "config_device_volte_available": true,
+        "config_device_vt_available": true,
+        "config_device_wfc_ims_available": true
+      }
+    },
+    "TelephonyResCommon": {
+      "target": "com.android.phone",
+      "values": {
+        "config_ims_mmtel_package": "org.codeaurora.ims"
+      }
+    },
+    "CarrierConfigResCommon": {
+      "target": "com.android.carrierconfig",
+      "xml": "product/overlay/CarrierConfigResCommon_Sys.apk",
+      "mcc": "460"
+    }
+  },
   "sources": {
     "identity": "Read at generation time from the stock vendor/build.prop: ro.product.vendor.{brand,manufacturer,model}, ro.product.first_api_level and ro.sf.lcd_density.",
     "built_partitions": "File systems of the stock RedMagicOS 11.0.23MR1 system, system_ext and product images.",
     "super": "Stock super partition metadata (lpdump on the device).",
     "init_boot": "Stock init_boot partition (8 MiB in the GPT) and image: header version 4, page size 4096, no kernel, empty command line, zero OS version and patch level, LZ4 legacy ramdisk; AVB hash footer with algorithm NONE, the salt and the properties above.",
     "vintf_manifests": "Vendor HAL manifests of the stock vendor and odm images.",
-    "recovery": "Stock recovery image, a whole-partition dump: its size is the partition size and its header gives the header version. From its ramdisk come the fstab, the minui pixel format, the QTI boot control and health HALs with their libraries, init scripts and VINTF fragments, and init.recovery.qcom.rc, which links /dev/block/bootdevice for the fstab. screen_width is the panel width: the stock system reports DisplayInfo(1216 x 2688). rounded_corner_radius_dp is dimen/rounded_corner_radius of the stock vendor overlay FrameworksResTarget_Vendor.apk; the menu margins are that radius in pixels."
+    "recovery": "Stock recovery image, a whole-partition dump: its size is the partition size and its header gives the header version. From its ramdisk come the fstab, the minui pixel format, the QTI boot control and health HALs with their libraries, init scripts and VINTF fragments, and init.recovery.qcom.rc, which links /dev/block/bootdevice for the fstab. screen_width is the panel width: the stock system reports DisplayInfo(1216 x 2688). rounded_corner_radius_dp is dimen/rounded_corner_radius of the stock vendor overlay FrameworksResTarget_Vendor.apk; the menu margins are that radius in pixels.",
+    "proprietary": "The QTI IMS stack of the stock system_ext and product: the ImsService app org.codeaurora.ims, the Java libraries it uses with their declarations, and the native libraries it loads, including the video telephony ones and what they link. vendor.qti.diaghal-V1-ndk is on the stock system and installed to system_ext with the rest.",
+    "overlays": "FrameworkResCommon: values of the stock system/framework/framework-res.apk. TelephonyResCommon: config_ims_mmtel_package of the stock product/overlay/TelephonyResCommon_Sys.apk; its config_ims_rcs_package names the RCS service, which isn't installed, so it is left unset. CarrierConfigResCommon: the stock product/overlay/CarrierConfigResCommon_Sys.apk, keeping the Chinese carriers (mcc 460) only. Its block without filters, which stock applies to every SIM, is limited to mcc 460 as well; other SIMs keep the platform's own carrier configs."
   }
 }

@@ -9,13 +9,49 @@
     "sha256": "84499a489777051f959b8f494340946c72d1a76009750a6b1d0446136566c9fe"
   },
   "NX809J.mk": {
-    "sha256": "ea3078e275510ed50049ded2b5b98f05b1c6469313910e76ac145090356de537"
+    "sha256": "fa755deab0ee1f4bd21e1d71366e16ed171906098ff6215b9ea54a5082ccdb17"
   },
   "compatibility_matrix.device.xml": {
     "sha256": "a601665626d078dd79804eb0bd980cf2d75b7bd36271bc9bb05116033b2fc511"
   },
+  "overlays/CarrierConfigResCommon/Android.bp": {
+    "sha256": "239ad9c6531de28ac14de8d9a4233cebef921fded0ed7bd76c6d35b8e910b8fa"
+  },
+  "overlays/CarrierConfigResCommon/AndroidManifest.xml": {
+    "sha256": "79988a5924df7b9fb64540e16bdfeb04d013e07296a4327247745f3e040fdcbb"
+  },
+  "overlays/CarrierConfigResCommon/res/xml/vendor.xml": {
+    "sha256": "4c7b9171598c6f3c5137186dd45610dc3827ec722f2eeb4e6d5800383bf6603e"
+  },
+  "overlays/FrameworkResCommon/Android.bp": {
+    "sha256": "8dd50134e45f4856ecad27a11d949baa9bd03c7457ad045eac5e99671130bc80"
+  },
+  "overlays/FrameworkResCommon/AndroidManifest.xml": {
+    "sha256": "562436fda5b60a7982b73fff0d10bb14ecdfe1271e9c86105a2cc88c884ab090"
+  },
+  "overlays/FrameworkResCommon/res/values/config.xml": {
+    "sha256": "7a23a3ae2a85850da68366091ca5c2a9c0cd3010ac462f07bf98c9607a9e2059"
+  },
+  "overlays/TelephonyResCommon/Android.bp": {
+    "sha256": "bc772a3c5c3b5d09e9e3fe14159afca5ae66937352a8a283e1bcf38e1f1246cf"
+  },
+  "overlays/TelephonyResCommon/AndroidManifest.xml": {
+    "sha256": "2f7835b90183565768a4ee2929ccfa94fd3c949292a71ad6080d47c0524447bd"
+  },
+  "overlays/TelephonyResCommon/res/values/config.xml": {
+    "sha256": "12d6bc847b96399294f5ad532cacccc548e622226c93ece730e705ba15d094c6"
+  },
+  "permissions/privapp-permissions-org.codeaurora.ims.xml": {
+    "sha256": "81ffb69e85c7f117fd4310f9bba933f3ccaa593374d420139ad569adb4a231f4"
+  },
   "proprietary/Android.bp": {
-    "sha256": "7cc37d5c74514673fcdef68d7d6c2a097d60845bcfe471b87a6b6800aad6c15f"
+    "sha256": "ffdec2d7abf41e0ba4ee695c1775541beedb90df5c64f9651403b4ecfb352b21"
+  },
+  "proprietary/product/etc/permissions/ims_ext_common.xml": {
+    "sha256": "2d0231984a8b68c24f312f5b3ee227354e5cc706371476eff5cf67d892e8c3c0"
+  },
+  "proprietary/product/framework/ims-ext-common.jar": {
+    "sha256": "e832235b8d2b6c254bd4b12f28214e1ab97e70c772456d1e30b5927252ebfe49"
   },
   "proprietary/recovery/init.recovery.qcom.rc": {
     "sha256": "d546b0cac17a7b00e63d4a2e24d6dfe99fe4cf517551e64016ae55c53312ae60"
@@ -61,5 +97,191 @@
   },
   "proprietary/stock/vendor_dlkm.img": {
     "input": "vendor_dlkm.img"
+  },
+  "proprietary/system_ext/etc/permissions/qti_telephony_hidl_wrapper.xml": {
+    "sha256": "9c77a1f474bec0104854e92fcbeef3b03640cb2491bd5bb3355c937a41e0c0ce"
+  },
+  "proprietary/system_ext/etc/permissions/qti_telephony_utils.xml": {
+    "sha256": "e7d6f08e08a293c14c5f810ae3cd3c36ab1ef798605de663617476bb90b424ac"
+  },
+  "proprietary/system_ext/framework/qti-telephony-hidl-wrapper.jar": {
+    "sha256": "0262c74a8ec7092b8b8ed1a9bed01a63be765583eb12c21cac718f6d8230d826"
+  },
+  "proprietary/system_ext/framework/qti-telephony-utils.jar": {
+    "sha256": "73f2fde1213dc40bbfc9f22251473028c64dfe93291dfe237265c235998e53a3"
+  },
+  "proprietary/system_ext/lib64/com.qualcomm.qti.imscmservice@2.0.so": {
+    "sha256": "dca946da9177afbf42bec6477954c60b25313a6e49f5c59759a0ae4663444c46"
+  },
+  "proprietary/system_ext/lib64/com.qualcomm.qti.imscmservice@2.1.so": {
+    "sha256": "9fc903df320ea3b20eb2a029f420d6073c6cc6711d545a5dd2ab9dafcbb23cdb"
+  },
+  "proprietary/system_ext/lib64/com.qualcomm.qti.imscmservice@2.2.so": {
+    "sha256": "b7ea578dffd5d62df2b75295f24b2471fe46a4ab7fb1a953b17e67ba447043ad"
+  },
+  "proprietary/system_ext/lib64/lib-imsvideocodec.so": {
+    "sha256": "3a56bb81639650ec2b7a3e280c99b1b1269eef19205674dc4531df15d2484fb1"
+  },
+  "proprietary/system_ext/lib64/lib-imsvt.so": {
+    "sha256": "cf5c86f7164a3b7eeb61398a2f6ac881aa9902c92be8d31c55cf91c5bf9e7eb8"
+  },
+  "proprietary/system_ext/lib64/lib-imsvtextutils.so": {
+    "sha256": "8b7b05f0a86c0e2335ba61b51e021c52f703beca2e2d407133a863d1013f479b"
+  },
+  "proprietary/system_ext/lib64/lib-imsvtutils.so": {
+    "sha256": "1412f0cd97448cc8a2f72211be98f6b2c7bfce98467f721c3f320570c88c47e6"
+  },
+  "proprietary/system_ext/lib64/libdiag_system.qti.so": {
+    "sha256": "a9ac8f302c6f0f3e126cc4a644e466c0aafcc9517ecdd152e50f1a606cb980dd"
+  },
+  "proprietary/system_ext/lib64/libdiag_system.so": {
+    "sha256": "2c59f5d195cd6e49eceeb73c4c0b60b3415250960e39b9e829c292ea057beb35"
+  },
+  "proprietary/system_ext/lib64/libimscamera_jni.so": {
+    "sha256": "7db7b267f5a9598b52c9f728cb2867c95dbf315a698cffb8e033d7128c5b0026"
+  },
+  "proprietary/system_ext/lib64/libimsmedia_jni.so": {
+    "sha256": "625636a6bb590d3fe5f9f9f98c1cd8fc9df33825df6c4ddf6c0874c1a38509e6"
+  },
+  "proprietary/system_ext/lib64/vendor.qti.ImsRtpService-V2-ndk.so": {
+    "sha256": "6358d6a2940a1fefff56c686b74f6556c333c8a8c49ed4f12c4a48ea28491b27"
+  },
+  "proprietary/system_ext/lib64/vendor.qti.diaghal-V1-ndk.so": {
+    "sha256": "861316035fc8bbcc3b7bf2129e426c39ce7f1a09257685bfc1dbd1f3e08ec457"
+  },
+  "proprietary/system_ext/lib64/vendor.qti.diaghal@1.0.so": {
+    "sha256": "f0af30005f7b267ac3964dd35b1b6e739630d5c544585b75726e2bb6fb7dedc9"
+  },
+  "proprietary/system_ext/lib64/vendor.qti.hardware.radio.ims@1.0.so": {
+    "sha256": "67acc204a9e718e2c4d16e41c599e6d2119015e3562a1d023a7777a67db90f67"
+  },
+  "proprietary/system_ext/lib64/vendor.qti.hardware.radio.ims@1.1.so": {
+    "sha256": "dc38d84f4bf8f27d5cb0f2bec4b46bb9272ae16d180c75252a6bce435b844ad5"
+  },
+  "proprietary/system_ext/lib64/vendor.qti.hardware.radio.ims@1.2.so": {
+    "sha256": "226fc2b08e9e9aa0bc7f492e6f2e7421e45f148c7f53ccdc91caaad1b3a41d9e"
+  },
+  "proprietary/system_ext/lib64/vendor.qti.hardware.radio.ims@1.3.so": {
+    "sha256": "a0a0544bcdadb48c2dbe61946a0eb46cafca46fdccbca2634f876cd60e727902"
+  },
+  "proprietary/system_ext/lib64/vendor.qti.hardware.radio.ims@1.4.so": {
+    "sha256": "80efe5f3947e226915994626a80a14727e64091a5cd9f7bdb1d99313a807c7a4"
+  },
+  "proprietary/system_ext/lib64/vendor.qti.hardware.radio.ims@1.5.so": {
+    "sha256": "18bae9b78826693844f15039b934278eb0fc7fa5bdd02e12f73bd683e733eeac"
+  },
+  "proprietary/system_ext/lib64/vendor.qti.hardware.radio.ims@1.6.so": {
+    "sha256": "60e991667cfebc9bcd23ac52d4e940c076e23e063b85880201cb57e12396e4a5"
+  },
+  "proprietary/system_ext/lib64/vendor.qti.hardware.radio.ims@1.7.so": {
+    "sha256": "84c7da22e9fad08b7af116eab416088fafc4e0367d21adb8f6f90403a0e7468b"
+  },
+  "proprietary/system_ext/lib64/vendor.qti.hardware.radio.ims@1.8.so": {
+    "sha256": "69674e8208aa059bac825125d70e9c28d171db4e164ee38e0b350514f83a2df8"
+  },
+  "proprietary/system_ext/lib64/vendor.qti.hardware.radio.ims@1.9.so": {
+    "sha256": "c3065d7ceec5bad7f552066a60689aff8c2918f0b4c3c404b31986967eb77f99"
+  },
+  "proprietary/system_ext/lib64/vendor.qti.ims.callcapability@1.0.so": {
+    "sha256": "96c722c33e2f38124a848445b37e8c95e697c4049d3aaf6453ed6deea2514b8a"
+  },
+  "proprietary/system_ext/lib64/vendor.qti.ims.callcapabilityaidlservice-V1-ndk.so": {
+    "sha256": "451bbc53d8e13f9b8cdc756f8b1d64a3740d2bbb847818c094790ac4b0f01260"
+  },
+  "proprietary/system_ext/lib64/vendor.qti.ims.callinfo@1.0.so": {
+    "sha256": "2fe14a0ef942b40c68ba25402bdcd7ad49c18ebb226fb26ebd26c29de0733c8e"
+  },
+  "proprietary/system_ext/lib64/vendor.qti.ims.configaidlservice-V1-ndk.so": {
+    "sha256": "7ccf98850ce5572565347ca28e4eb822b707fd1b46cc7858f693f2fc75f60ff8"
+  },
+  "proprietary/system_ext/lib64/vendor.qti.ims.configservice@1.0.so": {
+    "sha256": "1dc2d6305508ffb0759415e8338654fcd9b77fd4579ba92dfc754944aba5dc63"
+  },
+  "proprietary/system_ext/lib64/vendor.qti.ims.configservice@1.1.so": {
+    "sha256": "79e9e053d063b8b71431e297d1142c95a4a4984fe4369cd076b69cab5cb9a573"
+  },
+  "proprietary/system_ext/lib64/vendor.qti.ims.connection@1.0.so": {
+    "sha256": "634fbc98ce4c9db44cf3cdf8218efdf3603a33aa25899d7738b426af8763e708"
+  },
+  "proprietary/system_ext/lib64/vendor.qti.ims.connectionaidlservice-V1-ndk.so": {
+    "sha256": "ef63d8dded1ffe3417da58bba30b2ab819cc5683e9b4090eeba7156980495ab8"
+  },
+  "proprietary/system_ext/lib64/vendor.qti.ims.datachannelservice-V1-ndk.so": {
+    "sha256": "cd1ffebb9002e398ba07bdea75441e6e800dc1da9b658f76f7b7c3d9aa1c3628"
+  },
+  "proprietary/system_ext/lib64/vendor.qti.ims.datachannelservice-V2-ndk.so": {
+    "sha256": "604dc37f6b1d81bf10185549b420d4f63475dea196762147008efa084bcbceed"
+  },
+  "proprietary/system_ext/lib64/vendor.qti.ims.datachannelservice-V3-ndk.so": {
+    "sha256": "fbba527731e76a66b0f18d833bbd3b6f08c393a9f4a2dcd52245159dab8b10fe"
+  },
+  "proprietary/system_ext/lib64/vendor.qti.ims.factory@1.0.so": {
+    "sha256": "abd469d64cd62b3559128a148c840e8866eaaa2870e800df3fc22f9963e7b162"
+  },
+  "proprietary/system_ext/lib64/vendor.qti.ims.factory@1.1.so": {
+    "sha256": "89c2528bf8d96136405e0cf1cf42e7b7d8a910d87866fee0a38ecc1f436cd976"
+  },
+  "proprietary/system_ext/lib64/vendor.qti.ims.factory@2.0.so": {
+    "sha256": "c466339c8a5795257c72d3d2397d70bb0a7ddcd2054ef98a0534aa6020bfa990"
+  },
+  "proprietary/system_ext/lib64/vendor.qti.ims.factory@2.1.so": {
+    "sha256": "7e6bd28c113613e7e3fcb674405f24c5ad4ea1b9af133af62d01fd79d6ace4e0"
+  },
+  "proprietary/system_ext/lib64/vendor.qti.ims.factory@2.2.so": {
+    "sha256": "de7774fd83684155101476b479389cfe0c48cac6e4984db679526c1dd79fdc13"
+  },
+  "proprietary/system_ext/lib64/vendor.qti.ims.factoryaidlservice-V1-ndk.so": {
+    "sha256": "d38bc76f9900a52a0f406fe9d34a4cfb0eb25aece735482f0c9fae68224bcfd6"
+  },
+  "proprietary/system_ext/lib64/vendor.qti.ims.imscmaidlservice-V1-ndk.so": {
+    "sha256": "e523122c115aa5f6a12d68d86f755d13280e32d6096a0d1ba8857aa1b8fad6eb"
+  },
+  "proprietary/system_ext/lib64/vendor.qti.ims.rcsconfig@1.0.so": {
+    "sha256": "5fdc7e6d2476a3fdc1591eae8df3d674caa2eb696d65e61e927a8729f945649d"
+  },
+  "proprietary/system_ext/lib64/vendor.qti.ims.rcsconfig@1.1.so": {
+    "sha256": "f19c4fe8c0c74751c44de900509f1a15ddbc969e29d5330205de3b6eb155823b"
+  },
+  "proprietary/system_ext/lib64/vendor.qti.ims.rcsconfig@2.0.so": {
+    "sha256": "d76dd377ac6f2d45757a71b44215a0ddff5d408c86052c842cb91394c3eca9fa"
+  },
+  "proprietary/system_ext/lib64/vendor.qti.ims.rcsconfig@2.1.so": {
+    "sha256": "e2f938a7b4897fbffa963c229e736fea72017dd3534206655e36b2f327c05191"
+  },
+  "proprietary/system_ext/lib64/vendor.qti.ims.rcssip@1.0.so": {
+    "sha256": "f310f1af4bf971847a161b5f5808c04aa3db83d704b00c16d80701bdbb7af23c"
+  },
+  "proprietary/system_ext/lib64/vendor.qti.ims.rcssip@1.1.so": {
+    "sha256": "66888e3c240c9a0fa05c18e9250cbd158c1b4b7577421f7d012935d06dfbba02"
+  },
+  "proprietary/system_ext/lib64/vendor.qti.ims.rcssip@1.2.so": {
+    "sha256": "bb22a6bd558a7596249227ab3f3210da8db89979b80bcbfe3224649e87408add"
+  },
+  "proprietary/system_ext/lib64/vendor.qti.ims.rcssipaidlservice-V1-ndk.so": {
+    "sha256": "bb4aa9bf1327e6d3806f92f873463fca5dfff52976f3d05b14f9754e49c7560e"
+  },
+  "proprietary/system_ext/lib64/vendor.qti.ims.rcsuce@1.0.so": {
+    "sha256": "d5c55d92b7a4867c09de7801f0857353b36a7d467b2403566010ac4baf7b3364"
+  },
+  "proprietary/system_ext/lib64/vendor.qti.ims.rcsuce@1.1.so": {
+    "sha256": "16d7009ec71d8d1023e9090c4ec0dee99c021ef6543a0eb00a698de293dd5698"
+  },
+  "proprietary/system_ext/lib64/vendor.qti.ims.rcsuce@1.2.so": {
+    "sha256": "66c2c2080952de5051467bfd6c24668da60fc6c8372ed938cd5f08b346f19836"
+  },
+  "proprietary/system_ext/lib64/vendor.qti.ims.rcsuceaidlservice-V1-ndk.so": {
+    "sha256": "754b97bec1bf1d05ff2a71fb11918ced158bacabf026a6338a0d6b2d0a334851"
+  },
+  "proprietary/system_ext/lib64/vendor.qti.ims.uceaidlservice-V1-ndk.so": {
+    "sha256": "7f912b241cabedb86638b23be1bce3c511e809631acf6cc43b618af22f6d5072"
+  },
+  "proprietary/system_ext/lib64/vendor.qti.imsrtpservice@3.0.so": {
+    "sha256": "1288d29b87b457b8bf172f748c14ab50244a8d57b9ffddad8ac642b72e25f81b"
+  },
+  "proprietary/system_ext/lib64/vendor.qti.imsrtpservice@3.1.so": {
+    "sha256": "741aa55f8032cd754f7c863e571b1719b340b4e5d9ca2d2d2b36f75293677c6d"
+  },
+  "proprietary/system_ext/priv-app/ims/ims.apk": {
+    "sha256": "564f2d4489ae1c5d37e224847af3713bb898a719df4d17e8dbc014bc3f83f6ac"
   }
 }

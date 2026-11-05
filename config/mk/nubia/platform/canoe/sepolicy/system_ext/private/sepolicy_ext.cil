@@ -1,0 +1,55 @@
+;; SELinux domain of the stock QTI ImsService app (org.codeaurora.ims), from the stock
+;; system_ext policy. Only rules on platform types are kept; the stock rules on the vendor
+;; private types vendor_dpmd and vendor_dpmtcm_socket are left out until a denial shows
+;; that they are needed.
+;;
+;; This is CIL because the domain belongs to the stock vendor policy, which declares it in
+;; its plat_pub_versioned.cil, and because of the attribute expansion below. The device
+;; compiles the policy with secilc -m, which accepts the repeated declarations; the build
+;; also compiles this file without the vendor policy, which needs them.
+
+(type vendor_qtelephony)
+(type vendor_qtelephony_userfaultfd)
+
+;; The stock vendor policy writes its rules for the app against vendor_qtelephony_202504,
+;; its versioned view of the domain (202504 is the stock vendor's plat_sepolicy_vers.txt).
+;; Only a platform policy of the same version says what that attribute contains. With this
+;; one it stays empty and secilc drops those rules without a word: the app can't read the
+;; vendor radio properties, and IMS never registers. Both the expansion and the membership
+;; are needed.
+(typeattribute vendor_qtelephony_202504)
+(expandtypeattribute (vendor_qtelephony_202504) true)
+(typeattributeset vendor_qtelephony_202504 (vendor_qtelephony))
+
+(typeattributeset domain (vendor_qtelephony))
+(typeattributeset appdomain (vendor_qtelephony))
+(typeattributeset netdomain (vendor_qtelephony))
+(typeattributeset coredomain (vendor_qtelephony))
+(typeattributeset halclientdomain (vendor_qtelephony))
+(typeattributeset hal_telephony_client (vendor_qtelephony))
+
+(typetransition vendor_qtelephony tmpfs file appdomain_tmpfs)
+(typetransition vendor_qtelephony vendor_qtelephony anon_inode "[userfaultfd]" vendor_qtelephony_userfaultfd)
+
+(allow vendor_qtelephony vendor_qtelephony_userfaultfd (anon_inode (ioctl read create)))
+(allow vendor_qtelephony appdomain_tmpfs (file (ioctl read write getattr map execute)))
+(allowx vendor_qtelephony appdomain_tmpfs (ioctl file ((range 0x7701 0x770b))))
+
+(allow vendor_qtelephony app_api_service (service_manager (find)))
+(allow vendor_qtelephony system_api_service (service_manager (find)))
+(allow vendor_qtelephony radio_service (service_manager (find)))
+(allow vendor_qtelephony audioserver_service (service_manager (find)))
+(allow vendor_qtelephony cameraserver_service (service_manager (find)))
+(allow vendor_qtelephony drmserver_service (service_manager (find)))
+(allow vendor_qtelephony mediaextractor_service (service_manager (find)))
+(allow vendor_qtelephony mediametrics_service (service_manager (find)))
+(allow vendor_qtelephony mediaserver_service (service_manager (find)))
+
+(allow vendor_qtelephony hwservicemanager (binder (call transfer)))
+(allow hwservicemanager vendor_qtelephony (binder (call transfer)))
+(allow vendor_qtelephony servicemanager (binder (call transfer)))
+(allow servicemanager vendor_qtelephony (binder (call transfer)))
+(allow vendor_qtelephony hwservicemanager_prop (file (read getattr map open)))
+(allow vendor_qtelephony bluetooth_prop (property_service (set)))
+(allow vendor_qtelephony property_socket (sock_file (write)))
+(allow vendor_qtelephony init (unix_stream_socket (connectto)))

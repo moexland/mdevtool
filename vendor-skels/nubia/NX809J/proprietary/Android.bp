@@ -2,11 +2,11 @@
 
 cc_prebuilt_binary {
     name: "android.hardware.boot-service.qti.recovery",
-    owner: "nubia",
     srcs: ["recovery/system/bin/hw/android.hardware.boot-service.qti.recovery"],
     relative_install_path: "hw",
-    shared_libs: ["liblog", "libboot_control_qti", "libbase", "libbinder_ndk", "android.hardware.boot-V1-ndk", "android.hardware.boot@1.1"],
+    owner: "nubia",
     recovery: true,
+    shared_libs: ["liblog", "libboot_control_qti", "libbase", "libbinder_ndk", "android.hardware.boot-V1-ndk", "android.hardware.boot@1.1"],
     strip: { none: true },
     // 4 KiB aligned, and built against the stock versions of these libraries.
     check_elf_files: false,
@@ -14,11 +14,11 @@ cc_prebuilt_binary {
 
 cc_prebuilt_binary {
     name: "android.hardware.health-service.qti_recovery",
-    owner: "nubia",
     srcs: ["recovery/system/bin/hw/android.hardware.health-service.qti_recovery"],
     relative_install_path: "hw",
-    shared_libs: ["libbase", "libbinder_ndk", "libcutils", "liblog", "libutils", "android.hardware.health-V4-ndk", "libhidlbase"],
+    owner: "nubia",
     recovery: true,
+    shared_libs: ["libbase", "libbinder_ndk", "libcutils", "liblog", "libutils", "android.hardware.health-V4-ndk", "libhidlbase"],
     strip: { none: true },
     // 4 KiB aligned, and built against the stock versions of these libraries.
     check_elf_files: false,
@@ -26,11 +26,11 @@ cc_prebuilt_binary {
 
 cc_prebuilt_library_shared {
     name: "libboot_control_qti",
-    owner: "nubia",
     compile_multilib: "64",
     target: { android_arm64: { srcs: ["recovery/system/lib64/libboot_control_qti.so"] } },
-    shared_libs: ["android.hardware.boot@1.1", "librecovery_updater", "libbase", "libcutils", "liblog", "libz"],
+    owner: "nubia",
     recovery: true,
+    shared_libs: ["android.hardware.boot@1.1", "librecovery_updater", "libbase", "libcutils", "liblog", "libz"],
     strip: { none: true },
     // 4 KiB aligned, and built against the stock versions of these libraries.
     check_elf_files: false,
@@ -38,11 +38,741 @@ cc_prebuilt_library_shared {
 
 cc_prebuilt_library_shared {
     name: "librecovery_updater",
-    owner: "nubia",
     compile_multilib: "64",
     target: { android_arm64: { srcs: ["recovery/system/lib64/librecovery_updater.so"] } },
-    shared_libs: ["libcutils", "libion", "liblog", "libz"],
+    owner: "nubia",
     recovery: true,
+    shared_libs: ["libcutils", "libion", "liblog", "libz"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+android_app_import {
+    name: "ims",
+    owner: "nubia",
+    apk: "system_ext/priv-app/ims/ims.apk",
+    certificate: "platform",
+    privileged: true,
+    // Compiled for the stock Android version, so not against this boot image.
+    dex_preopt: { enabled: false },
+    system_ext_specific: true,
+}
+
+install_symlink {
+    name: "ims_symlink_libimscamera_jni",
+    installed_location: "priv-app/ims/lib/arm64/libimscamera_jni.so",
+    symlink_target: "/system_ext/lib64/libimscamera_jni.so",
+    system_ext_specific: true,
+}
+
+install_symlink {
+    name: "ims_symlink_libimsmedia_jni",
+    installed_location: "priv-app/ims/lib/arm64/libimsmedia_jni.so",
+    symlink_target: "/system_ext/lib64/libimsmedia_jni.so",
+    system_ext_specific: true,
+}
+
+dex_import {
+    name: "qti-telephony-hidl-wrapper",
+    owner: "nubia",
+    jars: ["system_ext/framework/qti-telephony-hidl-wrapper.jar"],
+    system_ext_specific: true,
+}
+
+dex_import {
+    name: "qti-telephony-utils",
+    owner: "nubia",
+    jars: ["system_ext/framework/qti-telephony-utils.jar"],
+    system_ext_specific: true,
+}
+
+dex_import {
+    name: "ims-ext-common",
+    owner: "nubia",
+    jars: ["product/framework/ims-ext-common.jar"],
+    product_specific: true,
+}
+
+cc_prebuilt_library_shared {
+    name: "com.qualcomm.qti.imscmservice@2.0",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/com.qualcomm.qti.imscmservice@2.0.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["libhidlbase", "liblog", "libutils", "libcutils"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "com.qualcomm.qti.imscmservice@2.1",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/com.qualcomm.qti.imscmservice@2.1.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["com.qualcomm.qti.imscmservice@2.0", "libhidlbase", "liblog", "libutils", "libcutils"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "com.qualcomm.qti.imscmservice@2.2",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/com.qualcomm.qti.imscmservice@2.2.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["com.qualcomm.qti.imscmservice@2.0", "com.qualcomm.qti.imscmservice@2.1", "libhidlbase", "liblog", "libutils", "libcutils"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "lib-imsvideocodec",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/lib-imsvideocodec.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["lib-imsvtutils", "lib-imsvtextutils", "libcutils", "libutils", "liblog", "libdiag_system", "libgui", "libandroid", "libnativewindow", "libmediandk"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "lib-imsvt",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/lib-imsvt.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["lib-imsvideocodec", "libmediandk", "libnativewindow", "libion", "libdmabufheap", "lib-imsvtutils", "libandroid", "libhidlbase", "vendor.qti.imsrtpservice@3.0", "vendor.qti.imsrtpservice@3.1", "libbinder", "libbinder_ndk", "vendor.qti.ImsRtpService-V2-ndk", "libdiag_system", "libcutils", "libutils", "liblog"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "lib-imsvtextutils",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/lib-imsvtextutils.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["libutils", "libcutils", "liblog", "libdiag_system", "lib-imsvtutils", "libGLESv2", "libEGL"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "lib-imsvtutils",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/lib-imsvtutils.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["libutils", "libcutils", "liblog", "libdiag_system"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "libdiag_system.qti",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/libdiag_system.qti.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["vendor.qti.diaghal@1.0", "libhidlbase", "liblog", "libutils", "android.hidl.allocator@1.0", "android.hidl.memory@1.0", "libhidlmemory", "libcutils", "libbinder_ndk", "vendor.qti.diaghal-V1-ndk"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "libdiag_system",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/libdiag_system.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["vendor.qti.diaghal@1.0", "libhidlbase", "liblog", "libutils", "android.hidl.allocator@1.0", "android.hidl.memory@1.0", "libhidlmemory", "libcutils", "libbinder_ndk", "vendor.qti.diaghal-V1-ndk"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "libimscamera_jni",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/libimscamera_jni.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["libnativehelper", "libcutils", "libutils", "liblog"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "libimsmedia_jni",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/libimsmedia_jni.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["libnativehelper", "libcutils", "libutils", "libgui", "libbinder", "liblog", "libandroid"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "vendor.qti.ImsRtpService-V2-ndk",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/vendor.qti.ImsRtpService-V2-ndk.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["libbinder_ndk", "android.hardware.common-V2-ndk"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "vendor.qti.diaghal@1.0",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/vendor.qti.diaghal@1.0.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["libhidlbase", "liblog", "libutils", "libcutils"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "vendor.qti.hardware.radio.ims@1.0",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/vendor.qti.hardware.radio.ims@1.0.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["libhidlbase", "liblog", "libutils", "libcutils"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "vendor.qti.hardware.radio.ims@1.1",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/vendor.qti.hardware.radio.ims@1.1.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["vendor.qti.hardware.radio.ims@1.0", "libhidlbase", "liblog", "libutils", "libcutils"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "vendor.qti.hardware.radio.ims@1.2",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/vendor.qti.hardware.radio.ims@1.2.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["vendor.qti.hardware.radio.ims@1.0", "vendor.qti.hardware.radio.ims@1.1", "libhidlbase", "liblog", "libutils", "libcutils"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "vendor.qti.hardware.radio.ims@1.3",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/vendor.qti.hardware.radio.ims@1.3.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["vendor.qti.hardware.radio.ims@1.0", "vendor.qti.hardware.radio.ims@1.1", "vendor.qti.hardware.radio.ims@1.2", "libhidlbase", "liblog", "libutils", "libcutils"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "vendor.qti.hardware.radio.ims@1.4",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/vendor.qti.hardware.radio.ims@1.4.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["vendor.qti.hardware.radio.ims@1.0", "vendor.qti.hardware.radio.ims@1.1", "vendor.qti.hardware.radio.ims@1.2", "vendor.qti.hardware.radio.ims@1.3", "libhidlbase", "liblog", "libutils", "libcutils"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "vendor.qti.hardware.radio.ims@1.5",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/vendor.qti.hardware.radio.ims@1.5.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["vendor.qti.hardware.radio.ims@1.0", "vendor.qti.hardware.radio.ims@1.1", "vendor.qti.hardware.radio.ims@1.2", "vendor.qti.hardware.radio.ims@1.3", "vendor.qti.hardware.radio.ims@1.4", "libhidlbase", "liblog", "libutils", "libcutils"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "vendor.qti.hardware.radio.ims@1.6",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/vendor.qti.hardware.radio.ims@1.6.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["vendor.qti.hardware.radio.ims@1.0", "vendor.qti.hardware.radio.ims@1.1", "vendor.qti.hardware.radio.ims@1.2", "vendor.qti.hardware.radio.ims@1.3", "vendor.qti.hardware.radio.ims@1.4", "vendor.qti.hardware.radio.ims@1.5", "libhidlbase", "liblog", "libutils", "libcutils"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "vendor.qti.hardware.radio.ims@1.7",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/vendor.qti.hardware.radio.ims@1.7.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["vendor.qti.hardware.radio.ims@1.0", "vendor.qti.hardware.radio.ims@1.1", "vendor.qti.hardware.radio.ims@1.2", "vendor.qti.hardware.radio.ims@1.3", "vendor.qti.hardware.radio.ims@1.4", "vendor.qti.hardware.radio.ims@1.5", "vendor.qti.hardware.radio.ims@1.6", "libhidlbase", "liblog", "libutils", "libcutils"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "vendor.qti.hardware.radio.ims@1.8",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/vendor.qti.hardware.radio.ims@1.8.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["vendor.qti.hardware.radio.ims@1.0", "vendor.qti.hardware.radio.ims@1.1", "vendor.qti.hardware.radio.ims@1.2", "vendor.qti.hardware.radio.ims@1.3", "vendor.qti.hardware.radio.ims@1.4", "vendor.qti.hardware.radio.ims@1.5", "vendor.qti.hardware.radio.ims@1.6", "vendor.qti.hardware.radio.ims@1.7", "libhidlbase", "liblog", "libutils", "libcutils"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "vendor.qti.hardware.radio.ims@1.9",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/vendor.qti.hardware.radio.ims@1.9.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["vendor.qti.hardware.radio.ims@1.0", "vendor.qti.hardware.radio.ims@1.1", "vendor.qti.hardware.radio.ims@1.2", "vendor.qti.hardware.radio.ims@1.3", "vendor.qti.hardware.radio.ims@1.4", "vendor.qti.hardware.radio.ims@1.5", "vendor.qti.hardware.radio.ims@1.6", "vendor.qti.hardware.radio.ims@1.7", "vendor.qti.hardware.radio.ims@1.8", "libhidlbase", "liblog", "libutils", "libcutils"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "vendor.qti.ims.callcapability@1.0",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/vendor.qti.ims.callcapability@1.0.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["libhidlbase", "liblog", "libutils", "libcutils"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "vendor.qti.ims.callcapabilityaidlservice-V1-ndk",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/vendor.qti.ims.callcapabilityaidlservice-V1-ndk.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["libbinder_ndk"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "vendor.qti.ims.callinfo@1.0",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/vendor.qti.ims.callinfo@1.0.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["libhidlbase", "liblog", "libutils", "libcutils"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "vendor.qti.ims.configaidlservice-V1-ndk",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/vendor.qti.ims.configaidlservice-V1-ndk.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["libbinder_ndk"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "vendor.qti.ims.configservice@1.0",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/vendor.qti.ims.configservice@1.0.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["libhidlbase", "liblog", "libutils", "libcutils"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "vendor.qti.ims.configservice@1.1",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/vendor.qti.ims.configservice@1.1.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["vendor.qti.ims.configservice@1.0", "libhidlbase", "liblog", "libutils", "libcutils"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "vendor.qti.ims.connection@1.0",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/vendor.qti.ims.connection@1.0.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["libhidlbase", "liblog", "libutils", "libcutils"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "vendor.qti.ims.connectionaidlservice-V1-ndk",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/vendor.qti.ims.connectionaidlservice-V1-ndk.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["libbinder_ndk"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "vendor.qti.ims.datachannelservice-V1-ndk",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/vendor.qti.ims.datachannelservice-V1-ndk.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["libbinder_ndk"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "vendor.qti.ims.datachannelservice-V2-ndk",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/vendor.qti.ims.datachannelservice-V2-ndk.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["libbinder_ndk"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "vendor.qti.ims.datachannelservice-V3-ndk",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/vendor.qti.ims.datachannelservice-V3-ndk.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["libbinder_ndk"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "vendor.qti.ims.factory@1.0",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/vendor.qti.ims.factory@1.0.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["vendor.qti.ims.callcapability@1.0", "vendor.qti.ims.rcsconfig@2.0", "libhidlbase", "liblog", "libutils", "libcutils"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "vendor.qti.ims.factory@1.1",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/vendor.qti.ims.factory@1.1.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["vendor.qti.ims.callcapability@1.0", "vendor.qti.ims.factory@1.0", "vendor.qti.ims.rcsconfig@2.0", "vendor.qti.ims.rcsconfig@2.1", "libhidlbase", "liblog", "libutils", "libcutils"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "vendor.qti.ims.factory@2.0",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/vendor.qti.ims.factory@2.0.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["vendor.qti.ims.connection@1.0", "vendor.qti.ims.callcapability@1.0", "vendor.qti.ims.rcsuce@1.0", "vendor.qti.ims.rcssip@1.0", "vendor.qti.ims.configservice@1.0", "libhidlbase", "liblog", "libutils", "libcutils"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "vendor.qti.ims.factory@2.1",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/vendor.qti.ims.factory@2.1.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["vendor.qti.ims.callcapability@1.0", "vendor.qti.ims.configservice@1.0", "vendor.qti.ims.configservice@1.1", "vendor.qti.ims.connection@1.0", "vendor.qti.ims.factory@2.0", "vendor.qti.ims.rcssip@1.0", "vendor.qti.ims.rcssip@1.1", "vendor.qti.ims.rcsuce@1.0", "vendor.qti.ims.rcsuce@1.1", "libhidlbase", "liblog", "libutils", "libcutils"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "vendor.qti.ims.factory@2.2",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/vendor.qti.ims.factory@2.2.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["vendor.qti.ims.callcapability@1.0", "vendor.qti.ims.configservice@1.0", "vendor.qti.ims.configservice@1.1", "vendor.qti.ims.connection@1.0", "vendor.qti.ims.factory@2.0", "vendor.qti.ims.factory@2.1", "vendor.qti.ims.rcssip@1.0", "vendor.qti.ims.rcssip@1.1", "vendor.qti.ims.rcssip@1.2", "vendor.qti.ims.rcsuce@1.0", "vendor.qti.ims.rcsuce@1.1", "vendor.qti.ims.rcsuce@1.2", "libhidlbase", "liblog", "libutils", "libcutils"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "vendor.qti.ims.factoryaidlservice-V1-ndk",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/vendor.qti.ims.factoryaidlservice-V1-ndk.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["libbinder_ndk", "vendor.qti.ims.rcsuceaidlservice-V1-ndk", "vendor.qti.ims.rcssipaidlservice-V1-ndk", "vendor.qti.ims.callcapabilityaidlservice-V1-ndk", "vendor.qti.ims.connectionaidlservice-V1-ndk", "vendor.qti.ims.configaidlservice-V1-ndk"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "vendor.qti.ims.imscmaidlservice-V1-ndk",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/vendor.qti.ims.imscmaidlservice-V1-ndk.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["libbinder_ndk"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "vendor.qti.ims.rcsconfig@1.0",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/vendor.qti.ims.rcsconfig@1.0.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["libhidlbase", "liblog", "libutils", "libcutils"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "vendor.qti.ims.rcsconfig@1.1",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/vendor.qti.ims.rcsconfig@1.1.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["vendor.qti.ims.rcsconfig@1.0", "libhidlbase", "liblog", "libutils", "libcutils"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "vendor.qti.ims.rcsconfig@2.0",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/vendor.qti.ims.rcsconfig@2.0.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["libhidlbase", "liblog", "libutils", "libcutils"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "vendor.qti.ims.rcsconfig@2.1",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/vendor.qti.ims.rcsconfig@2.1.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["vendor.qti.ims.rcsconfig@2.0", "libhidlbase", "liblog", "libutils", "libcutils"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "vendor.qti.ims.rcssip@1.0",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/vendor.qti.ims.rcssip@1.0.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["libhidlbase", "liblog", "libutils", "libcutils"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "vendor.qti.ims.rcssip@1.1",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/vendor.qti.ims.rcssip@1.1.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["vendor.qti.ims.rcssip@1.0", "libhidlbase", "liblog", "libutils", "libcutils"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "vendor.qti.ims.rcssip@1.2",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/vendor.qti.ims.rcssip@1.2.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["vendor.qti.ims.rcssip@1.0", "vendor.qti.ims.rcssip@1.1", "libhidlbase", "liblog", "libutils", "libcutils"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "vendor.qti.ims.rcssipaidlservice-V1-ndk",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/vendor.qti.ims.rcssipaidlservice-V1-ndk.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["libbinder_ndk"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "vendor.qti.ims.rcsuce@1.0",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/vendor.qti.ims.rcsuce@1.0.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["libhidlbase", "liblog", "libutils", "libcutils"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "vendor.qti.ims.rcsuce@1.1",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/vendor.qti.ims.rcsuce@1.1.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["vendor.qti.ims.rcsuce@1.0", "libhidlbase", "liblog", "libutils", "libcutils"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "vendor.qti.ims.rcsuce@1.2",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/vendor.qti.ims.rcsuce@1.2.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["vendor.qti.ims.rcsuce@1.0", "vendor.qti.ims.rcsuce@1.1", "libhidlbase", "liblog", "libutils", "libcutils"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "vendor.qti.ims.rcsuceaidlservice-V1-ndk",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/vendor.qti.ims.rcsuceaidlservice-V1-ndk.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["libbinder_ndk"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "vendor.qti.ims.uceaidlservice-V1-ndk",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/vendor.qti.ims.uceaidlservice-V1-ndk.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["libbinder_ndk"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "vendor.qti.imsrtpservice@3.0",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/vendor.qti.imsrtpservice@3.0.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["libhidlbase", "liblog", "libutils", "libcutils"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "vendor.qti.imsrtpservice@3.1",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/vendor.qti.imsrtpservice@3.1.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["vendor.qti.imsrtpservice@3.0", "libhidlbase", "liblog", "libutils", "libcutils"],
+    strip: { none: true },
+    // 4 KiB aligned, and built against the stock versions of these libraries.
+    check_elf_files: false,
+}
+
+cc_prebuilt_library_shared {
+    name: "vendor.qti.diaghal-V1-ndk",
+    compile_multilib: "64",
+    target: { android_arm64: { srcs: ["system_ext/lib64/vendor.qti.diaghal-V1-ndk.so"] } },
+    owner: "nubia",
+    system_ext_specific: true,
+    shared_libs: ["libbinder_ndk", "android.hardware.common-V2-ndk"],
     strip: { none: true },
     // 4 KiB aligned, and built against the stock versions of these libraries.
     check_elf_files: false,
