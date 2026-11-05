@@ -1,0 +1,8 @@
+// Framework resource values chosen for NX809J. Values carried over from the stock
+// framework-res are generated into FrameworkResCommon instead.
+runtime_resource_overlay {
+    name: "GrimoNX809JFrameworkOverlay",
+    certificate: "platform",
+    sdk_version: "current",
+    product_specific: true,
+}

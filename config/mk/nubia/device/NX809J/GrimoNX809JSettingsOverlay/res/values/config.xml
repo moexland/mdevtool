@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Smooth Display: on allows the highest mode, off limits the display to 60 Hz. It also
+         shows "Force peak refresh rate" in developer options. -->
+    <bool name="config_show_smooth_display">true</bool>
+</resources>

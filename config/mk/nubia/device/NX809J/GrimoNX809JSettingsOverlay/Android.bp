@@ -1,0 +1,7 @@
+// Settings resource values chosen for NX809J.
+runtime_resource_overlay {
+    name: "GrimoNX809JSettingsOverlay",
+    certificate: "platform",
+    sdk_version: "current",
+    product_specific: true,
+}

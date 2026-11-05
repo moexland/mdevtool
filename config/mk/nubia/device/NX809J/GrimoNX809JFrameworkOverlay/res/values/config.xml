@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- The panel has 60, 90, 120 and 144 Hz modes. The stock vendor overlay
+         (android.overlay.target) sets a default of 120 and a peak of 240; stock firmware
+         ignores both because its own controller bypasses DisplayModeDirector.
+
+         0 casts no default vote, as in the stock framework-res. A default of 120 would cap
+         the render rate of everything that doesn't request a rate explicitly. -->
+    <integer name="config_defaultRefreshRate">0</integer>
+
+    <!-- The highest mode. 240 selects the same modes, but Settings shows Smooth Display as
+         off unless the peak equals the highest mode. -->
+    <integer name="config_defaultPeakRefreshRate">144</integer>
+</resources>
