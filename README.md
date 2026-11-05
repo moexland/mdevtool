@@ -8,9 +8,9 @@ mdevtool is the device support tool of GrimoireOS, playing the part of GrapheneO
 
 ## 工作方式 | How It Works
 
-构建入口在生成的`vendor/nubia/NX809J`里。这个目录不进git，每次运行生成器都会整个删掉重写：原厂事实（产品身份、分区几何、启动镜像参数、VINTF矩阵、原厂镜像、从原厂recovery取出的HAL与fstab、IMS的原厂件，以及按原厂取值重建的资源覆盖层）都写在这里，手写的配方则留在mdevtool里，由生成的makefile先行引入、再被生成值覆盖。
+构建入口在生成的`vendor/nubia/NX809J`里。这个目录不进git，每次运行生成器都会整个重新生成，但只写入内容有变化的文件、删去不再生成的文件，没变的文件保留原来的时间戳，构建就不会重做依赖它们的步骤：原厂事实（产品身份、分区几何、启动镜像参数、VINTF矩阵、原厂镜像、从原厂recovery取出的HAL与fstab、IMS的原厂件，以及按原厂取值重建的资源覆盖层）都写在这里，手写的配方则留在mdevtool里，由生成的makefile先行引入、再被生成值覆盖。
 
-The build entry points live in the generated `vendor/nubia/NX809J`. That directory is not kept in git; every run of the generator deletes and rewrites it. Stock facts — product identity, partition geometry, boot image parameters, the VINTF matrix, the stock images, the HALs and fstab taken from the stock recovery, the stock IMS files, and resource overlays rebuilt with stock values — are written there, while the hand-written recipes stay in mdevtool, included first by the generated makefiles and then overridden by the generated values.
+The build entry points live in the generated `vendor/nubia/NX809J`. That directory is not kept in git; every run of the generator regenerates all of it, but writes only the files whose content changed and removes those no longer generated, so unchanged files keep their timestamps and the build doesn't redo the steps that depend on them. Stock facts — product identity, partition geometry, boot image parameters, the VINTF matrix, the stock images, the HALs and fstab taken from the stock recovery, the stock IMS files, and resource overlays rebuilt with stock values — are written there, while the hand-written recipes stay in mdevtool, included first by the generated makefiles and then overridden by the generated values.
 
 - `generate.py`：生成器。先核对原厂输入的哈希，再写出vendor树，最后与`vendor-specs`比对。
 - `config/device/<机型>.json`：原厂事实与生成方式，每组取值注明出处；`<机型>-inputs.json`列出原厂输入及其哈希。

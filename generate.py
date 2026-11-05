@@ -2,7 +2,8 @@
 """Generate the vendor tree of a device from its stock firmware.
 
 The output, vendor/<vendor>/<device> in the source tree, is not kept in git. Each
-run deletes it and writes it again from:
+run regenerates all of it, but writes only the files that changed and removes those no
+longer generated, so that unchanged files keep their timestamps. It is made from:
 
 * config/device/<device>.json: stock facts and what to build from them;
 * config/device/<device>-inputs.json: the stock inputs and their hashes;
@@ -24,6 +25,7 @@ import difflib
 import hashlib
 import io
 import json
+import os
 import posixpath
 import shutil
 import stat
@@ -933,14 +935,50 @@ def products_list(device: Device) -> str:
     )
 
 
-def reset_output(out: Path) -> None:
+def write_output(
+    out: Path, files: dict[str, bytes], links: dict[str, Path]
+) -> tuple[int, int]:
+    """Make out hold exactly these files and links, and leave the rest alone.
+
+    A file rewritten with the same content still gets a new mtime, and the build then
+    redoes everything that depends on it: the permission XMLs alone make it recompile
+    the framework. So only what differs is written, and what is no longer generated is
+    removed. Returns the number of paths written and removed.
+    """
     if out.is_symlink() or (out.exists() and not out.is_dir()):
         raise GenerateError(f"{out} is not a directory")
-    if out.exists():
-        if not (out / MARKER).is_file():
-            raise GenerateError(f"Refusing to delete {out}: it has no {MARKER} marker")
-        shutil.rmtree(out)
-    out.mkdir(parents=True)
+    if out.exists() and not (out / MARKER).is_file():
+        raise GenerateError(f"Refusing to write to {out}: it has no {MARKER} marker")
+    wanted = files.keys() | links.keys()
+    removed = 0
+    for top, dirs, names in os.walk(out, topdown=False):
+        directory = Path(top)
+        # os.walk lists links to directories with the directories, without entering.
+        for name in [*names, *(d for d in dirs if (directory / d).is_symlink())]:
+            if (directory / name).relative_to(out).as_posix() not in wanted:
+                (directory / name).unlink()
+                removed += 1
+        if directory != out and not any(directory.iterdir()):
+            directory.rmdir()
+    written = 0
+    for relative, content in files.items():
+        target = out / relative
+        if target.is_symlink():
+            target.unlink()
+        elif target.is_file() and target.read_bytes() == content:
+            continue
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(content)
+        written += 1
+    for relative, link in links.items():
+        target = out / relative
+        if target.is_symlink() and target.readlink() == link:
+            continue
+        target.unlink(missing_ok=True)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.symlink_to(link)
+        written += 1
+    return written, removed
 
 
 def snapshot(out: Path, root: Path) -> dict[str, dict[str, str]]:
@@ -1016,21 +1054,12 @@ def generate(device: Device, root: Path, update_spec: bool) -> None:
     for section in sections.values():
         texts.update(section.texts)
         files.update(section.files)
+    files.update((relative, text.encode()) for relative, text in texts.items())
+    files[MARKER] = f"{HEADER}\n".encode()
+    files[VERSION_CHECK] = version_check(device).encode()
+    links = {f"{STOCK_DIR}/{name}.img": path for name, path in images.items()}
     out = TREE / device.out_path
-    reset_output(out)
-    (out / MARKER).write_text(f"{HEADER}\n")
-    (out / VERSION_CHECK).write_text(version_check(device))
-    for relative, content in [*texts.items(), *files.items()]:
-        target = out / relative
-        target.parent.mkdir(parents=True, exist_ok=True)
-        if isinstance(content, str):
-            target.write_text(content)
-        else:
-            target.write_bytes(content)
-    stock = out / STOCK_DIR
-    stock.mkdir(parents=True)
-    for name, path in images.items():
-        (stock / f"{name}.img").symlink_to(path)
+    written, removed = write_output(out, files, links)
     entries = snapshot(out, root)
     if update_spec:
         device.spec_file.parent.mkdir(parents=True, exist_ok=True)
@@ -1038,7 +1067,10 @@ def generate(device: Device, root: Path, update_spec: bool) -> None:
         update_skels(device, texts)
     else:
         compare_spec(device, entries)
-    print(f"Generated {device.out_path} ({len(entries)} entries)")
+    print(
+        f"Generated {device.out_path} ({len(entries)} entries; "
+        f"{written} written, {removed} removed)"
+    )
 
 
 def main() -> int:
