@@ -1,0 +1,23 @@
+;; Log file of the stock qmipriod (QTI QMI priority helper for mobile data), for userdebug
+;; and eng builds only.
+;;
+;; qmipriod reads ro.build.type. On userdebug and eng it first opens
+;; /data/vendor/qmipriod/log.txt with fopen("w") and exits if that fails. The stock vendor
+;; policy was built for a user system and grants no access to that file, so on a debug
+;; system init restarts the daemon every 5 seconds.
+;;
+;; fopen("w") opens with O_WRONLY | O_CREAT | O_TRUNC, and stdio calls fstat to size its
+;; buffer. The stock vendor creates the directory and, on boot, an empty log, but the
+;; daemon starts as soon as persist.vendor.data.qmipriod_load is set, which can be
+;; earlier, so after a data wipe it may have to create the file itself. Nothing else is
+;; granted: the daemon doesn't read, append to, rename or remove the log.
+;;
+;; The types come from the stock vendor policy. They are declared again because the build
+;; compiles this file without that policy; the device compiles with secilc -m, which
+;; accepts the repeated declarations.
+
+(type vendor_qmipriod)
+(type vendor_qmipriod_data_file)
+
+(allow vendor_qmipriod vendor_qmipriod_data_file (dir (search write add_name)))
+(allow vendor_qmipriod vendor_qmipriod_data_file (file (create open write getattr)))

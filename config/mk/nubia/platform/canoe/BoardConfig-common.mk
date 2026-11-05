@@ -14,4 +14,10 @@ BOARD_VENDOR_SEPOLICY_DIRS += vendor/mdevtool/config/mk/nubia/platform/canoe/sep
 # The domain of the stock QTI ImsService app.
 SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS += vendor/mdevtool/config/mk/nubia/platform/canoe/sepolicy/system_ext/private
 
+# Rules for stock vendor daemons that behave differently on userdebug and eng systems.
+# CIL has no userdebug_or_eng(), so the build variant selects the directory instead.
+ifneq ($(filter userdebug eng,$(TARGET_BUILD_VARIANT)),)
+SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS += vendor/mdevtool/config/mk/nubia/platform/canoe/sepolicy/debug/system_ext/private
+endif
+
 include vendor/mdevtool/config/mk/nubia/common/BoardConfig-common.mk

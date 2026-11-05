@@ -99,6 +99,7 @@ Recovery boots, shows its menu, accepts adb connections and reads the battery. I
 - 因此fastbootd报告的槽位信息不可信，不要用它刷写分区。
 - 尚未验证用`adb sideload`安装更新包。
 - SELinux拒绝了屏幕亮度的调节，不影响显示。
+- 高通的移动数据优先级服务qmipriod能正常运行，但它向主、副SIM查询优先级状态都返回无效，对移动数据有没有影响尚未确认。
 
 <!-- 分开中英两个列表 | keeps the two lists apart -->
 
@@ -107,6 +108,7 @@ Recovery boots, shows its menu, accepts adb connections and reads the battery. I
 - fastbootd therefore reports wrong slot information; don't flash partitions with it.
 - Installing updates with `adb sideload` hasn't been verified.
 - SELinux denies the screen brightness controls; the display still works.
+- Qualcomm's mobile data priority service, qmipriod, runs, but its priority state queries on both SIM subscriptions come back invalid; whether this affects mobile data hasn't been checked.
 
 ## 授权 | License
 
