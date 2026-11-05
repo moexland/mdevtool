@@ -1,3 +1,9 @@
+# The stock RedMagicOS system init.rc imports this vendor file; AOSP's doesn't.
+# It sets up vendor nodes at boot (the liquid cooling pump, display, charging)
+# and holds vendor property triggers. Its commands still run as vendor_init,
+# because init picks the context from the file's /vendor path.
+import /vendor/etc/init/hw/init.vendor.rc
+
 # Stock QTI services that crash-loop on this system. Stopping them once boot
 # completes is a workaround: it doesn't fix the binaries, and they still crash
 # before this trigger.

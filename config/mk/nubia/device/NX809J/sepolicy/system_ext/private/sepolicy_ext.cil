@@ -1,0 +1,21 @@
+;; GrimoNX809JCooling writes the fan control nodes, which the stock vendor policy labels
+;; sysfs_nb_fan, under its own UID as platform_app. The stock system wrote them from
+;; system_server instead, so two things the app needs were never there.
+;;
+;; init.nx809j.grimoireos.rc opens the nodes to 0666 at boot. That rc runs as init, and AOSP
+;; lets init chmod only a short list of sysfs types; the setattr rule adds the fan nodes.
+;;
+;; The stock vendor policy already allows platform_app to write the nodes, but apps run at
+;; their user's MLS level (s0:c512,c768 for the owner) and the nodes at s0, and the MLS
+;; constraint lets a write cross levels only for a trusted subject or object. system_server
+;; is a trusted subject. The stock vendor policy marks the pump's proc_ztelcd_set as a
+;; trusted object, which is why the pump already works; this does the same for the fan.
+;; Which domains may write the nodes is still up to the stock vendor policy's allow rules.
+;;
+;; The type is declared here because the build also compiles this file without the vendor
+;; policy. The device compiles the policy with secilc -m, which accepts the repeated
+;; declaration.
+
+(type sysfs_nb_fan)
+(allow init sysfs_nb_fan (file (setattr)))
+(typeattributeset mlstrustedobject (sysfs_nb_fan))

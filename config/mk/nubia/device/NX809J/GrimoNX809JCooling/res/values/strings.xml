@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name">Cooling</string>
+    <string name="settings_summary">Fan and liquid cooling</string>
+
+    <string name="fan_category">Fan</string>
+    <string name="fan_switch">Use the cooling fan</string>
+    <string name="pump_category">Liquid cooling</string>
+    <string name="pump_switch">Use liquid cooling</string>
+
+    <string name="mode_auto">Automatic</string>
+    <string name="fan_auto_summary">Spins while unlocked and while charging until full, pauses during calls. The speed follows the body temperature.</string>
+    <string name="pump_auto_summary">Runs while unlocked and while charging until full, pauses during calls</string>
+    <string name="mode_manual">Manual</string>
+    <string name="fan_manual_summary">Always spins at the chosen level</string>
+    <string name="pump_manual_summary">Always runs</string>
+
+    <string name="fan_level">Level</string>
+    <string name="pump_speed">Flow speed</string>
+    <string name="speed_low">Low</string>
+    <string name="speed_medium">Medium</string>
+    <string name="speed_high">High</string>
+
+    <string name="status_pending">Checking…</string>
+    <string name="status_unknown">State unknown</string>
+    <string name="fan_running">Spinning at level <xliff:g id="level">%1$d</xliff:g></string>
+    <string name="fan_stopped">Stopped</string>
+    <string name="pump_running_low">Running at low speed</string>
+    <string name="pump_running_medium">Running at medium speed</string>
+    <string name="pump_running_high">Running at high speed</string>
+    <string name="pump_stopped">Stopped</string>
+    <string name="paused">Paused</string>
+
+    <string name="reason_call">In a call. Resumes when the call ends.</string>
+    <string name="reason_charging">Charging</string>
+    <string name="reason_locked">Screen locked or off</string>
+    <string name="reason_shutdown">Shutting down</string>
+    <string name="reason_temperature">Body temperature <xliff:g id="celsius">%1$d</xliff:g> °C</string>
+    <string name="reason_no_temperature">Body temperature unavailable, so the fan uses level 3</string>
+    <string name="driver_error">The driver didn\'t confirm the request: <xliff:g id="error">%1$s</xliff:g></string>
+    <string name="save_failed">Couldn\'t save the settings. After a restart, the last saved settings apply.</string>
+    <string name="owner_only">Cooling can only be changed from the device owner\'s profile.</string>
+</resources>

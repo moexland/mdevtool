@@ -1,8 +1,18 @@
 # The stock vendor policy labels the fan control nodes in vendor_file_contexts
 # (/sys/kernel/fan -> sysfs_nb_fan). Sysfs nodes only get file_contexts labels
 # through restorecon, so apply them once the driver has created the nodes.
+#
+# The stock init.qcom.rc makes the nodes system 0664, and the stock system wrote
+# them from system_server. GrimoNX809JCooling runs under its own UID instead, so
+# the two nodes it writes are opened up the way the stock init.vendor.rc does for
+# the pump. The chmod runs as init, which needs the setattr rule in
+# sepolicy/system_ext/private; the same file lets the app's writes cross MLS
+# levels. SELinux still limits writers to the domains the stock vendor policy
+# names, platform_app among them.
 on boot
     restorecon /sys/kernel/fan
     restorecon /sys/kernel/fan/fan_enable
     restorecon /sys/kernel/fan/fan_speed_count
     restorecon /sys/kernel/fan/fan_speed_level
+    chmod 0666 /sys/kernel/fan/fan_enable
+    chmod 0666 /sys/kernel/fan/fan_speed_level

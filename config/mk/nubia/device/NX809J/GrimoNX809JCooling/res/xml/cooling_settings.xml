@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Every preference has a key: dialog preferences find themselves again by it, and the page
+    binds by it. Nothing is saved here; CoolingApplication holds the settings, and the page
+    renders them. The level range and the flow speeds come from Cooler.
+-->
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <Preference
+        app:key="owner_only"
+        app:title="@string/owner_only"
+        app:selectable="false"
+        app:isPreferenceVisible="false"
+        app:iconSpaceReserved="false" />
+
+    <PreferenceCategory
+        app:key="fan"
+        app:title="@string/fan_category"
+        app:iconSpaceReserved="false">
+
+        <SwitchPreferenceCompat
+            app:key="fan.switch"
+            app:persistent="false"
+            app:title="@string/fan_switch"
+            app:iconSpaceReserved="false" />
+
+        <com.android.settingslib.widget.SelectorWithWidgetPreference
+            app:key="fan.auto"
+            app:persistent="false"
+            app:title="@string/mode_auto"
+            app:summary="@string/fan_auto_summary"
+            app:iconSpaceReserved="false" />
+
+        <com.android.settingslib.widget.SelectorWithWidgetPreference
+            app:key="fan.manual"
+            app:persistent="false"
+            app:title="@string/mode_manual"
+            app:summary="@string/fan_manual_summary"
+            app:iconSpaceReserved="false" />
+
+        <SeekBarPreference
+            app:key="fan.level"
+            app:persistent="false"
+            app:title="@string/fan_level"
+            app:showSeekBarValue="true"
+            app:updatesContinuously="false"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            app:key="fan.status"
+            app:title="@string/status_pending"
+            app:selectable="false"
+            app:iconSpaceReserved="false" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="pump"
+        app:title="@string/pump_category"
+        app:iconSpaceReserved="false">
+
+        <SwitchPreferenceCompat
+            app:key="pump.switch"
+            app:persistent="false"
+            app:title="@string/pump_switch"
+            app:iconSpaceReserved="false" />
+
+        <com.android.settingslib.widget.SelectorWithWidgetPreference
+            app:key="pump.auto"
+            app:persistent="false"
+            app:title="@string/mode_auto"
+            app:summary="@string/pump_auto_summary"
+            app:iconSpaceReserved="false" />
+
+        <com.android.settingslib.widget.SelectorWithWidgetPreference
+            app:key="pump.manual"
+            app:persistent="false"
+            app:title="@string/mode_manual"
+            app:summary="@string/pump_manual_summary"
+            app:iconSpaceReserved="false" />
+
+        <ListPreference
+            app:key="pump.speed"
+            app:persistent="false"
+            app:title="@string/pump_speed"
+            app:useSimpleSummaryProvider="true"
+            app:iconSpaceReserved="false" />
+
+        <Preference
+            app:key="pump.status"
+            app:title="@string/status_pending"
+            app:selectable="false"
+            app:iconSpaceReserved="false" />
+    </PreferenceCategory>
+</PreferenceScreen>

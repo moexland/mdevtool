@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name">散热</string>
+    <string name="settings_summary">风扇、液冷</string>
+
+    <string name="fan_category">风扇</string>
+    <string name="fan_switch">使用散热风扇</string>
+    <string name="pump_category">液冷</string>
+    <string name="pump_switch">使用液冷循环</string>
+
+    <string name="mode_auto">自动</string>
+    <string name="fan_auto_summary">解锁使用时和充电未满时转动，通话时暂停，转速随机身温度变化</string>
+    <string name="pump_auto_summary">解锁使用时和充电未满时运行，通话时暂停</string>
+    <string name="mode_manual">手动</string>
+    <string name="fan_manual_summary">按选定的档位一直转动</string>
+    <string name="pump_manual_summary">一直运行</string>
+
+    <string name="fan_level">档位</string>
+    <string name="pump_speed">流速</string>
+    <string name="speed_low">低速</string>
+    <string name="speed_medium">中速</string>
+    <string name="speed_high">高速</string>
+
+    <string name="status_pending">正在读取…</string>
+    <string name="status_unknown">状态未知</string>
+    <string name="fan_running"><xliff:g id="level">%1$d</xliff:g> 档转动中</string>
+    <string name="fan_stopped">已停转</string>
+    <string name="pump_running_low">低速运行中</string>
+    <string name="pump_running_medium">中速运行中</string>
+    <string name="pump_running_high">高速运行中</string>
+    <string name="pump_stopped">已停止</string>
+    <string name="paused">已暂停</string>
+
+    <string name="reason_call">通话中，挂断后恢复</string>
+    <string name="reason_charging">充电中</string>
+    <string name="reason_locked">屏幕已锁定或熄灭</string>
+    <string name="reason_shutdown">正在关机</string>
+    <string name="reason_temperature">机身 <xliff:g id="celsius">%1$d</xliff:g>°C</string>
+    <string name="reason_no_temperature">未读到机身温度，固定 3 档</string>
+    <string name="driver_error">驱动没有确认这次请求：<xliff:g id="error">%1$s</xliff:g></string>
+    <string name="save_failed">设置未能保存，重启后会回到上次保存的设置</string>
+    <string name="owner_only">散热只能在机主账号中调整。</string>
+</resources>
