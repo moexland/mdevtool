@@ -11,4 +11,128 @@
     <string name="config_wlan_network_service_package" translatable="false">vendor.qti.iwlan</string>
     <string name="config_wlan_data_service_package" translatable="false">vendor.qti.iwlan</string>
     <string name="config_qualified_networks_service_package" translatable="false">vendor.qti.iwlan</string>
+    <bool name="config_automatic_brightness_available">true</bool>
+    <integer-array name="config_autoBrightnessLevels">
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>10</item>
+        <item>15</item>
+        <item>50</item>
+        <item>100</item>
+        <item>220</item>
+        <item>420</item>
+        <item>1500</item>
+        <item>3000</item>
+        <item>5000</item>
+        <item>14000</item>
+        <item>50000</item>
+        <item>100000</item>
+    </integer-array>
+    <array name="config_autoBrightnessDisplayValuesNits">
+        <item>5.1</item>
+        <item>8.87</item>
+        <item>16.05</item>
+        <item>20.23</item>
+        <item>29.01</item>
+        <item>43.74</item>
+        <item>80</item>
+        <item>90</item>
+        <item>98.09</item>
+        <item>130</item>
+        <item>260.8</item>
+        <item>550</item>
+        <item>650</item>
+        <item>800</item>
+        <item>990</item>
+        <item>1599.52</item>
+    </array>
+    <integer name="config_autoBrightnessBrighteningLightDebounce">1000</integer>
+    <integer name="config_autoBrightnessDarkeningLightDebounce">3000</integer>
+    <integer-array name="config_ambientThresholdLevels">
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>20</item>
+        <item>30</item>
+        <item>40</item>
+        <item>50</item>
+        <item>60</item>
+        <item>70</item>
+        <item>80</item>
+        <item>90</item>
+        <item>100</item>
+        <item>200</item>
+        <item>300</item>
+        <item>400</item>
+        <item>500</item>
+        <item>1000</item>
+        <item>2000</item>
+        <item>3000</item>
+        <item>4000</item>
+    </integer-array>
+    <integer-array name="config_ambientBrighteningThresholds">
+        <item>4000</item>
+        <item>2500</item>
+        <item>2000</item>
+        <item>1000</item>
+        <item>900</item>
+        <item>900</item>
+        <item>800</item>
+        <item>800</item>
+        <item>800</item>
+        <item>799</item>
+        <item>527</item>
+        <item>499</item>
+        <item>470</item>
+        <item>517</item>
+        <item>565</item>
+        <item>612</item>
+        <item>660</item>
+        <item>708</item>
+        <item>742</item>
+        <item>636</item>
+        <item>582</item>
+        <item>549</item>
+        <item>369</item>
+        <item>294</item>
+        <item>269</item>
+        <item>220</item>
+        <item>220</item>
+    </integer-array>
+    <integer-array name="config_ambientDarkeningThresholds">
+        <item>100</item>
+        <item>400</item>
+        <item>600</item>
+        <item>650</item>
+        <item>640</item>
+        <item>630</item>
+        <item>620</item>
+        <item>610</item>
+        <item>600</item>
+        <item>700</item>
+        <item>600</item>
+        <item>440</item>
+        <item>385</item>
+        <item>382</item>
+        <item>379</item>
+        <item>376</item>
+        <item>373</item>
+        <item>371</item>
+        <item>367</item>
+        <item>387</item>
+        <item>397</item>
+        <item>403</item>
+        <item>380</item>
+        <item>375</item>
+        <item>333</item>
+        <item>283</item>
+        <item>283</item>
+    </integer-array>
 </resources>

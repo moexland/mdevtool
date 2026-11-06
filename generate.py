@@ -760,6 +760,31 @@ def keep_country(carriers: XmlNode, mcc: str, name: str) -> None:
     carriers.children = kept
 
 
+def resource_value(name: str, value: object) -> list[str] | None:
+    """Resource XML for a bool, integer, string or list of numbers from the configuration."""
+    if isinstance(value, bool):
+        return [f'    <bool name="{name}">{str(value).lower()}</bool>']
+    if isinstance(value, int):
+        return [f'    <integer name="{name}">{value}</integer>']
+    if isinstance(value, str):
+        return [
+            f'    <string name="{name}" translatable="false">{xml_escape(value)}</string>'
+        ]
+    if (
+        isinstance(value, list)
+        and value
+        and all(isinstance(v, (int, float)) and not isinstance(v, bool) for v in value)
+    ):
+        # Items keep their JSON spelling, so 80 compiles to an integer and 5.1 to a float.
+        tag = "integer-array" if all(isinstance(v, int) for v in value) else "array"
+        return [
+            f'    <{tag} name="{name}">',
+            *(f"        <item>{v}</item>" for v in value),
+            f"    </{tag}>",
+        ]
+    return None
+
+
 def overlay_section(device: Device, root: Path) -> Section:
     """Rebuild stock resource values as static runtime resource overlays.
 
@@ -779,16 +804,10 @@ def overlay_section(device: Device, root: Path) -> Section:
         if "values" in spec:
             values = []
             for name, value in spec["values"].items():
-                if isinstance(value, bool):
-                    values.append(
-                        f'    <bool name="{name}">{str(value).lower()}</bool>'
-                    )
-                elif isinstance(value, str):
-                    values.append(
-                        f'    <string name="{name}" translatable="false">{xml_escape(value)}</string>'
-                    )
-                else:
+                lines = resource_value(name, value)
+                if lines is None:
                     raise GenerateError(f"Unsupported overlay value {module}/{name}")
+                values += lines
             section.texts[f"{base}/res/values/config.xml"] = "\n".join(
                 [
                     '<?xml version="1.0" encoding="utf-8"?>',

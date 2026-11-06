@@ -162,7 +162,15 @@
         "config_telephony5gNonStandalone": true,
         "config_wlan_network_service_package": "vendor.qti.iwlan",
         "config_wlan_data_service_package": "vendor.qti.iwlan",
-        "config_qualified_networks_service_package": "vendor.qti.iwlan"
+        "config_qualified_networks_service_package": "vendor.qti.iwlan",
+        "config_automatic_brightness_available": true,
+        "config_autoBrightnessLevels": [2, 3, 4, 10, 15, 50, 100, 220, 420, 1500, 3000, 5000, 14000, 50000, 100000],
+        "config_autoBrightnessDisplayValuesNits": [5.1, 8.87, 16.05, 20.23, 29.01, 43.74, 80, 90, 98.09, 130, 260.8, 550, 650, 800, 990, 1599.52],
+        "config_autoBrightnessBrighteningLightDebounce": 1000,
+        "config_autoBrightnessDarkeningLightDebounce": 3000,
+        "config_ambientThresholdLevels": [2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 300, 400, 500, 1000, 2000, 3000, 4000],
+        "config_ambientBrighteningThresholds": [4000, 2500, 2000, 1000, 900, 900, 800, 800, 800, 799, 527, 499, 470, 517, 565, 612, 660, 708, 742, 636, 582, 549, 369, 294, 269, 220, 220],
+        "config_ambientDarkeningThresholds": [100, 400, 600, 650, 640, 630, 620, 610, 600, 700, 600, 440, 385, 382, 379, 376, 373, 371, 367, 387, 397, 403, 380, 375, 333, 283, 283]
       }
     },
     "TelephonyResCommon": {
@@ -185,6 +193,6 @@
     "vintf_manifests": "Vendor HAL manifests of the stock vendor and odm images.",
     "recovery": "Stock recovery image, a whole-partition dump: its size is the partition size and its header gives the header version. From its ramdisk come the fstab, the minui pixel format, the QTI boot control and health HALs with their libraries, init scripts and VINTF fragments, and init.recovery.qcom.rc, which links /dev/block/bootdevice for the fstab. screen_width is the panel width: the stock system reports DisplayInfo(1216 x 2688). rounded_corner_radius_dp is dimen/rounded_corner_radius of the stock vendor overlay FrameworksResTarget_Vendor.apk; the menu margins are that radius in pixels.",
     "proprietary": "The QTI IMS stack of the stock system_ext and product: the ImsService app org.codeaurora.ims, the Java libraries it uses with their declarations, and the native libraries it loads, including the video telephony ones and what they link. vendor.qti.diaghal-V1-ndk is on the stock system and installed to system_ext with the rest.",
-    "overlays": "FrameworkResCommon: values of the stock system/framework/framework-res.apk. TelephonyResCommon: config_ims_mmtel_package of the stock product/overlay/TelephonyResCommon_Sys.apk; its config_ims_rcs_package names the RCS service, which isn't installed, so it is left unset. CarrierConfigResCommon: the stock product/overlay/CarrierConfigResCommon_Sys.apk, keeping the Chinese carriers (mcc 460) only. Its block without filters, which stock applies to every SIM, is limited to mcc 460 as well; other SIMs keep the platform's own carrier configs."
+    "overlays": "FrameworkResCommon: values of the stock system/framework/framework-res.apk. The stock displayconfig has no autoBrightness section, so the stock system reads the auto-brightness curve, debounce times and ambient light thresholds from these values as well. Of the stock auto-brightness values, config_autoBrightnessLcdBacklightValues is left out: with 7 entries for 15 levels it can't form a curve, and the nits curve takes precedence anyway. config_autoBrightnessAdjustmentMaxGamma keeps the platform's 300% instead of the stock 105%, so that moving the slider in auto mode shifts the whole curve as on other GrapheneOS devices. TelephonyResCommon: config_ims_mmtel_package of the stock product/overlay/TelephonyResCommon_Sys.apk; its config_ims_rcs_package names the RCS service, which isn't installed, so it is left unset. CarrierConfigResCommon: the stock product/overlay/CarrierConfigResCommon_Sys.apk, keeping the Chinese carriers (mcc 460) only. Its block without filters, which stock applies to every SIM, is limited to mcc 460 as well; other SIMs keep the platform's own carrier configs."
   }
 }
