@@ -101,7 +101,7 @@ Recovery boots, shows its menu, accepts adb connections and reads the battery. I
 - SELinux拒绝了屏幕亮度的调节，不影响显示。
 - 高通的移动数据优先级服务qmipriod能正常运行，但它向主、副SIM查询优先级状态都返回无效，对移动数据有没有影响尚未确认。
 - 散热的自动模式没有原厂为游戏和跑分准备的场景；通话、锁屏和充电时自动启停的长时间表现尚未验证。
-- 刷新率没有原厂在低亮度下的固定档、高温降档和按应用的名单；屏幕静止时不会降到最低档，而是停在最后一档。
+- 刷新率没有原厂在低亮度下的固定档、高温降档和按应用的名单。
 - 自动亮度还没有带回原厂的调校。
 
 <!-- 分开中英两个列表 | keeps the two lists apart -->
@@ -113,7 +113,7 @@ Recovery boots, shows its menu, accepts adb connections and reads the battery. I
 - SELinux denies the screen brightness controls; the display still works.
 - Qualcomm's mobile data priority service, qmipriod, runs, but its priority state queries on both SIM subscriptions come back invalid; whether this affects mobile data hasn't been checked.
 - The automatic cooling modes lack the stock scenes for games and benchmarks, and how they start and stop around calls, the lock screen and charging over long use hasn't been checked.
-- The refresh rate lacks the stock fixed rate at low brightness, the thermal limits and the per-app lists; a static screen stays at the last rate instead of dropping to the lowest.
+- The refresh rate lacks the stock fixed rate at low brightness, the thermal limits and the per-app lists.
 - Auto brightness doesn't carry the stock tuning yet.
 
 ## 授权 | License
