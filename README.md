@@ -90,27 +90,31 @@ mdevtool serves GrimoireOS only and is not meant to be a general porting tool. Y
 
 ## 已知限制 | Known Limitations
 
-recovery能启动、显示菜单、接受adb连接，也能读取电量。IMS沿用原厂的QTI实现，已在网络上注册成功，VoLTE去电能经IMS发起。散热由机型层的设置应用控制风扇和液冷泵，两者各有自动、手动两种模式，风扇的自动模式按机身温度调档。下面这些目前不可用或尚未验证：
+recovery能启动、显示菜单、接受adb连接，也能读取电量。IMS沿用原厂的QTI实现，已在网络上注册成功，VoLTE去电能经IMS发起。散热由机型层的设置应用控制风扇和液冷泵，两者各有自动、手动两种模式，风扇的自动模式按机身温度调档。屏幕最高可到144 Hz，设置里有流畅画面开关；SIM热插拔、默认卡自动切换、5G SA与NSA，以及Wi-Fi通话所需的IWLAN服务，沿用原厂设置。下面这些目前不可用或尚未验证：
 
-Recovery boots, shows its menu, accepts adb connections and reads the battery. IMS uses the stock QTI implementation, registers with the network and places VoLTE calls through IMS. A settings app in the device layer runs the fan and the liquid cooling pump, each in an automatic or a manual mode; the automatic fan level follows the body temperature. The following doesn't work or hasn't been verified yet:
+Recovery boots, shows its menu, accepts adb connections and reads the battery. IMS uses the stock QTI implementation, registers with the network and places VoLTE calls through IMS. A settings app in the device layer runs the fan and the liquid cooling pump, each in an automatic or a manual mode; the automatic fan level follows the body temperature. The display reaches 144 Hz, with a Smooth Display switch in Settings; SIM hot swap, automatic default SIM fallback, 5G SA and NSA, and the IWLAN services that Wi-Fi calling needs follow the stock settings. The following doesn't work or hasn't been verified yet:
 
-- VoLTE语音通话还没有接通过，视频通话还没有试过；RCS服务没有安装。
+- VoLTE语音通话还没有接通过，视频通话和Wi-Fi通话还没有试过；RCS服务没有安装。
 - 启动控制HAL不随recovery自动启动。手动启动后，SELinux不允许它列出分区、读取分区节点的属性，所有槽位查询都会失败。
 - 因此fastbootd报告的槽位信息不可信，不要用它刷写分区。
 - 尚未验证用`adb sideload`安装更新包。
 - SELinux拒绝了屏幕亮度的调节，不影响显示。
 - 高通的移动数据优先级服务qmipriod能正常运行，但它向主、副SIM查询优先级状态都返回无效，对移动数据有没有影响尚未确认。
 - 散热的自动模式没有原厂为游戏和跑分准备的场景；通话、锁屏和充电时自动启停的长时间表现尚未验证。
+- 刷新率没有原厂在低亮度下的固定档、高温降档和按应用的名单；屏幕静止时不会降到最低档，而是停在最后一档。
+- 自动亮度还没有带回原厂的调校。
 
 <!-- 分开中英两个列表 | keeps the two lists apart -->
 
-- No VoLTE voice call has been answered yet and no video call has been tried; the RCS service isn't installed.
+- No VoLTE voice call has been answered yet, and neither video calls nor Wi-Fi calling have been tried; the RCS service isn't installed.
 - The boot control HAL doesn't start with recovery. Started by hand, it is denied by SELinux when it lists the partitions and reads the attributes of their device nodes, so every slot query fails.
 - fastbootd therefore reports wrong slot information; don't flash partitions with it.
 - Installing updates with `adb sideload` hasn't been verified.
 - SELinux denies the screen brightness controls; the display still works.
 - Qualcomm's mobile data priority service, qmipriod, runs, but its priority state queries on both SIM subscriptions come back invalid; whether this affects mobile data hasn't been checked.
 - The automatic cooling modes lack the stock scenes for games and benchmarks, and how they start and stop around calls, the lock screen and charging over long use hasn't been checked.
+- The refresh rate lacks the stock fixed rate at low brightness, the thermal limits and the per-app lists; a static screen stays at the last rate instead of dropping to the lowest.
+- Auto brightness doesn't carry the stock tuning yet.
 
 ## 授权 | License
 
