@@ -1,0 +1,18 @@
+// Ambient light compensation for NX809J. The light sensor sits under the panel and also reads
+// the panel's own light. As the stock system does, this tells the sensor HAL what the panel
+// shows over the sensor, and the HAL subtracts it.
+android_app {
+    name: "GrimoNX809JAls",
+    srcs: [
+        "src/**/*.java",
+        "src/**/*.kt",
+    ],
+    resource_dirs: ["res"],
+    platform_apis: true,
+    min_sdk_version: "36",
+    // The stock vendor policy lets only system_app use the HAL, so the app joins the system
+    // UID. That takes the platform certificate and a privileged app.
+    certificate: "platform",
+    privileged: true,
+    system_ext_specific: true,
+}

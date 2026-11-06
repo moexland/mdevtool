@@ -19,3 +19,12 @@
 (type sysfs_nb_fan)
 (allow init sysfs_nb_fan (file (setattr)))
 (typeattributeset mlstrustedobject (sysfs_nb_fan))
+
+;; GrimoNX809JAls joins the system UID and runs as system_app, the only client the stock vendor
+;; policy allows for the subsys HAL it calls. It also reads the raw backlight level from
+;; /sys/class/backlight/panel0-backlight/brightness, labelled vendor_sysfs_graphics. The stock
+;; system read it from system_server; the stock vendor policy gives system_app search on the
+;; directories and write, getattr and open on the files, but not read.
+
+(type vendor_sysfs_graphics)
+(allow system_app vendor_sysfs_graphics (file (read)))

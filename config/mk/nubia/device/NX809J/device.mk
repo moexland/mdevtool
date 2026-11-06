@@ -1,6 +1,7 @@
 # nubia RedMagic 11 Pro+ (NX809J).
 
 PRODUCT_PACKAGES += \
+    GrimoNX809JAls \
     GrimoNX809JCooling \
     GrimoNX809JFrameworkOverlay \
     GrimoNX809JSettingsOverlay \

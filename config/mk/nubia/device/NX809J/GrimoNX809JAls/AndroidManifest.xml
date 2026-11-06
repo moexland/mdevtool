@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    A persistent process without UI: the activity manager starts it at boot and restarts it if
+    it dies. It is direct boot aware because the sensor needs the compensation before the first
+    unlock as well, and it stores nothing.
+
+    The system UID maps to the system_app domain, the HAL client in the stock vendor policy, and
+    passes the permission checks of the screen capture and the thermal service, so the app
+    requests no permissions.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="land.moex.nx809j.als"
+    android:sharedUserId="android.uid.system"
+    android:versionCode="1"
+    android:versionName="1">
+
+    <application
+        android:name=".AlsApplication"
+        android:label="@string/app_name"
+        android:persistent="true"
+        android:directBootAware="true"
+        android:allowBackup="false" />
+</manifest>
