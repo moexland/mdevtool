@@ -30,7 +30,7 @@
     "sha256": "562436fda5b60a7982b73fff0d10bb14ecdfe1271e9c86105a2cc88c884ab090"
   },
   "overlays/FrameworkResCommon/res/values/config.xml": {
-    "sha256": "30b44960b445b40bad4148aedbbb7d5fac10fd03abd7debbf9c4a51df8b0d90f"
+    "sha256": "d4708af446e8868ce3504f5f2f1c10be4dfda30f16d09ce23c911506aa4c3493"
   },
   "overlays/TelephonyResCommon/Android.bp": {
     "sha256": "bc772a3c5c3b5d09e9e3fe14159afca5ae66937352a8a283e1bcf38e1f1246cf"
