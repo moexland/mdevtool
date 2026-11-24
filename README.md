@@ -90,9 +90,9 @@ mdevtool serves GrimoireOS only and is not meant to be a general porting tool. Y
 
 ## 已知限制 | Known Limitations
 
-recovery能启动、显示菜单、接受adb连接，也能读取电量。IMS沿用原厂的QTI实现，已在网络上注册成功，VoLTE去电能经IMS发起。散热由机型层的设置应用控制风扇和液冷泵，两者各有自动、手动两种模式，风扇的自动模式按机身温度调档。屏幕最高可到144 Hz，设置里有流畅画面开关，低亮度下固定在144 Hz，避免切换刷新率时亮度跳变；SIM热插拔、默认卡自动切换、5G SA与NSA，以及Wi-Fi通话所需的IWLAN服务，沿用原厂设置。自动亮度沿用原厂的亮度曲线、防抖时间与环境光阈值；光感在屏幕下方，会读到屏幕自身的光，机型层的一个系统应用像原厂一样把光感上方的屏幕颜色与背光交给传感器HAL，由它扣除。下面这些目前不可用或尚未验证：
+recovery能启动、显示菜单、接受adb连接，也能读取电量。IMS沿用原厂的QTI实现，已在网络上注册成功，VoLTE去电能经IMS发起。散热由机型层的设置应用控制风扇和液冷泵，两者各有自动、手动两种模式，风扇的自动模式按机身温度调档。屏幕最高可到144 Hz，设置里有流畅画面开关，低亮度下固定在144 Hz，避免切换刷新率时亮度跳变；SIM热插拔、默认卡自动切换、5G SA与NSA，以及Wi-Fi通话所需的IWLAN服务，沿用原厂设置。自动亮度沿用原厂的亮度曲线、防抖时间与环境光阈值；光感在屏幕下方，会读到屏幕自身的光，机型层的一个系统应用像原厂一样把光感上方的屏幕颜色与背光交给传感器HAL，由它扣除。熄屏时，新通知会以环境显示点亮屏幕，插拔电源会亮屏，双击屏幕可以唤醒：触控驱动只把熄屏时的双击报告成uevent，机型层的一个系统应用像原厂一样在驱动里开启这个手势并据此唤醒，接近传感器被遮住时不响应，开关是设置里的点按唤醒。下面这些目前不可用或尚未验证：
 
-Recovery boots, shows its menu, accepts adb connections and reads the battery. IMS uses the stock QTI implementation, registers with the network and places VoLTE calls through IMS. A settings app in the device layer runs the fan and the liquid cooling pump, each in an automatic or a manual mode; the automatic fan level follows the body temperature. The display reaches 144 Hz, with a Smooth Display switch in Settings, and holds 144 Hz at low brightness, where switching rates visibly changes the brightness; SIM hot swap, automatic default SIM fallback, 5G SA and NSA, and the IWLAN services that Wi-Fi calling needs follow the stock settings. Auto-brightness uses the stock brightness curve, debounce times and ambient light thresholds. The light sensor sits under the display and also reads the display's own light; as on the stock system, a system app in the device layer passes the colour and backlight over the sensor to the sensor HAL, which subtracts them. The following doesn't work or hasn't been verified yet:
+Recovery boots, shows its menu, accepts adb connections and reads the battery. IMS uses the stock QTI implementation, registers with the network and places VoLTE calls through IMS. A settings app in the device layer runs the fan and the liquid cooling pump, each in an automatic or a manual mode; the automatic fan level follows the body temperature. The display reaches 144 Hz, with a Smooth Display switch in Settings, and holds 144 Hz at low brightness, where switching rates visibly changes the brightness; SIM hot swap, automatic default SIM fallback, 5G SA and NSA, and the IWLAN services that Wi-Fi calling needs follow the stock settings. Auto-brightness uses the stock brightness curve, debounce times and ambient light thresholds. The light sensor sits under the display and also reads the display's own light; as on the stock system, a system app in the device layer passes the colour and backlight over the sensor to the sensor HAL, which subtracts them. With the screen off, new notifications light it as an ambient display, connecting or disconnecting power turns it on, and a double tap wakes the device: the touch driver reports a double tap on a dark screen only as a uevent, so, as on the stock system, a system app in the device layer enables the gesture in the driver and wakes the device on it, ignoring taps while the proximity sensor is covered and following the Tap to wake switch in Settings. The following doesn't work or hasn't been verified yet:
 
 - VoLTE语音通话还没有接通过，视频通话和Wi-Fi通话还没有试过；RCS服务没有安装。
 - 启动控制HAL不随recovery自动启动。手动启动后，SELinux不允许它列出分区、读取分区节点的属性，所有槽位查询都会失败。
@@ -103,6 +103,7 @@ Recovery boots, shows its menu, accepts adb connections and reads the battery. I
 - 散热的自动模式没有原厂为游戏和跑分准备的场景；通话、锁屏和充电时自动启停的长时间表现尚未验证。
 - 刷新率没有原厂的高温降档和按应用的名单；低亮度下固定144 Hz的耗电尚未评估。
 - 亮度变化以平台的恒定速率渐变，没有原厂按亮度区间变速的渐变，变暗比原厂快得多。横屏时的补偿区域与长时间使用的耗电尚未验证。
+- 环境显示与双击唤醒的待机耗电尚未评估；屏幕常亮默认关闭，打开后的效果尚未验证。
 
 <!-- 分开中英两个列表 | keeps the two lists apart -->
 
@@ -115,6 +116,7 @@ Recovery boots, shows its menu, accepts adb connections and reads the battery. I
 - The automatic cooling modes lack the stock scenes for games and benchmarks, and how they start and stop around calls, the lock screen and charging over long use hasn't been checked.
 - The refresh rate lacks the stock thermal limits and per-app lists; the power cost of holding 144 Hz at low brightness hasn't been measured.
 - Brightness changes ramp at the platform's constant rate rather than with the stock ramp, which changes speed by brightness range, so dimming is much faster than on the stock system. The compensation in landscape and its power use over long periods haven't been checked.
+- The standby power cost of the ambient display and of double tap to wake hasn't been measured; the always-on display is off by default and hasn't been tried.
 
 ## 授权 | License
 

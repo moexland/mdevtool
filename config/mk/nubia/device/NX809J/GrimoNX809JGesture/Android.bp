@@ -1,0 +1,16 @@
+// Double tap to wake for NX809J. With the gesture enabled, the touch driver recognises a double
+// tap while the screen is off, but reports it as a uevent rather than a wake key. As the stock
+// system does, an app enables the gesture in the driver and wakes the device on that uevent.
+android_app {
+    name: "GrimoNX809JGesture",
+    srcs: ["src/**/*.kt"],
+    resource_dirs: ["res"],
+    platform_apis: true,
+    min_sdk_version: "36",
+    // The stock vendor policy lets only system_app write the driver's node and listen for
+    // uevents, so the app joins the system UID. That takes the platform certificate and a
+    // privileged app.
+    certificate: "platform",
+    privileged: true,
+    system_ext_specific: true,
+}

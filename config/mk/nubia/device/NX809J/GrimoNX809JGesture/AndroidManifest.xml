@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    A persistent process without UI: the activity manager starts it at boot and restarts it if
+    it dies. It is direct boot aware because a double tap should wake the lock screen before the
+    first unlock as well, and it stores nothing.
+
+    The system UID maps to the system_app domain, which the stock vendor policy lets write the
+    driver's node and receive uevents, and passes the permission checks of waking the device,
+    holding a wake lock and reading the current user's settings, so the app requests no
+    permissions.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="land.moex.nx809j.gesture"
+    android:sharedUserId="android.uid.system"
+    android:versionCode="1"
+    android:versionName="1">
+
+    <application
+        android:name=".GestureApplication"
+        android:label="@string/app_name"
+        android:persistent="true"
+        android:directBootAware="true"
+        android:allowBackup="false" />
+</manifest>

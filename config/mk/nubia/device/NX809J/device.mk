@@ -4,6 +4,7 @@ PRODUCT_PACKAGES += \
     GrimoNX809JAls \
     GrimoNX809JCooling \
     GrimoNX809JFrameworkOverlay \
+    GrimoNX809JGesture \
     GrimoNX809JSettingsOverlay \
     init.nx809j.grimoireos.rc
 

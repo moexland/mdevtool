@@ -31,4 +31,8 @@
         <item>-1</item>
     </integer-array>
     <integer name="config_defaultRefreshRateInZone">144</integer>
+
+    <!-- Shows the Tap to wake switch in Settings. The stock value is false: the stock gesture
+         app has a switch of its own. GrimoNX809JGesture follows this one instead. -->
+    <bool name="config_supportDoubleTapWake">true</bool>
 </resources>
