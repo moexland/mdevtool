@@ -11,4 +11,24 @@
     <!-- The highest mode. 240 selects the same modes, but Settings shows Smooth Display as
          off unless the peak equals the highest mode. -->
     <integer name="config_defaultPeakRefreshRate">144</integer>
+
+    <!-- The panel's gamma differs between refresh rates. On dark content at low brightness
+         60 Hz is visibly brighter than 144 Hz, so every idle-timer switch shows as a flash.
+         At or below the brightness threshold the framework stays on one rate. With Smooth
+         Display off the peak vote outranks this one and the panel stays at 60 Hz.
+
+         The threshold is 160 on the 0-255 scale, roughly 91% of the brightness slider. It
+         is where the stock controller stops dropping the rate in dark mode (100 in light
+         mode); it reads the same scale from the screen_brightness setting. On this panel
+         the flash is obvious at three quarters of the slider and nearly gone at seven
+         eighths, so the threshold sits just above the range where it shows.
+
+         -1 leaves ambient light out of the decision. -->
+    <integer-array name="config_brightnessThresholdsOfPeakRefreshRate">
+        <item>160</item>
+    </integer-array>
+    <integer-array name="config_ambientThresholdsOfPeakRefreshRate">
+        <item>-1</item>
+    </integer-array>
+    <integer name="config_defaultRefreshRateInZone">144</integer>
 </resources>
